@@ -34,6 +34,9 @@ stop:
 	  @echo "Stopping bin/$(GONAME) if it's running"
 	    @-kill `[[ -f $(PID) ]] && cat $(PID)` 2>/dev/null || true
 
+test:
+	go test -v ./git_client/... 
+
 clear:
 	  @clear
 
