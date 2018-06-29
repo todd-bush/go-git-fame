@@ -43,7 +43,10 @@ func Test_ParseHeader(t *testing.T) {
 
 	header := ParseHeader(lines)
 
+	t.Log(header)
+
 	is.Equal(header.oid, "4e8a3451534e82b131a3c27fbcccadafb417de8f")
 	is.Equal(header.num_lines, 1)
+	is.Equal(header.author, "Todd Bush")
 
 }

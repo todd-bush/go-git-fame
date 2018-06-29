@@ -13,6 +13,7 @@ type BlameData struct {
 	num_lines   int
 	mail        string
 	time        string
+	tz          string
 	other_lines []string
 }
 
@@ -41,12 +42,23 @@ func ParseHeader(lines []string) BlameData {
 
 	bd := BlameData{oid: pieces[1], num_lines: numlines}
 
+	if strings.HasPrefix(lines[0], "author") {
+		authorline := splice(lines)
+		bd.author = strings.TrimPrefix(authorline, "author ")
+		authormail := splice(lines)
+		bd.mail = strings.TrimPrefix(authormail, "author-mail ")
+		authortime := splice(lines)
+		bd.time = strings.TrimPrefix(authortime, "author-time")
+		authortz := splice(lines)
+		bd.time = strings.TrimPrefix(authortz, "author-tz")
+	}
+
 	return bd
 }
 
-func splice(someslice []string) string {
-	result := someslice[0]
-	someslice = someslice[1:]
+func splice(sli []string) string {
+	result := sli[0]
+	sli = append(sli[:0], sli[1:]...)
 
 	return result
 }

@@ -130,23 +130,21 @@ filename Makefile
 		go install $(LDFLAGS)
 6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 29 50 1
 	
-4e8a3451534e82b131a3c27fbcccadafb417de8f 51 51 4
+4e8a3451534e82b131a3c27fbcccadafb417de8f 51 51 3
 	.PHONY: test
 4e8a3451534e82b131a3c27fbcccadafb417de8f 52 52
 	test: ## runs test with coverage (doesn't produce a report)
 4e8a3451534e82b131a3c27fbcccadafb417de8f 53 53
 		echo 'mode: atomic' > bin/coverage.txt && go list ./... | xargs -n1 -I{} sh -c 'go test -covermode=atomic -coverprofile=bin/coverage.tmp {} && tail -n +2 bin/coverage.tmp >> bin/coverage.txt' && rm bin/coverage.tmp
-4e8a3451534e82b131a3c27fbcccadafb417de8f 54 54
-		#go test -cover -v $(NOVENDOR)
-6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 33 55 1
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 33 54 1
 	
-4e8a3451534e82b131a3c27fbcccadafb417de8f 56 56 3
+4e8a3451534e82b131a3c27fbcccadafb417de8f 56 55 3
 	.PHONY: cover
-4e8a3451534e82b131a3c27fbcccadafb417de8f 57 57
+4e8a3451534e82b131a3c27fbcccadafb417de8f 57 56
 	cover: test ## Run all the tests and opens the coverage report
-4e8a3451534e82b131a3c27fbcccadafb417de8f 58 58
+4e8a3451534e82b131a3c27fbcccadafb417de8f 58 57
 			go tool cover -html=bin/coverage.txt
-61eed218cc82bef65f9829190fc915a524dc6d33 39 59 1
+61eed218cc82bef65f9829190fc915a524dc6d33 39 58 1
 author Todd Bush
 author-mail <todd.bush@lexisnexis.com>
 author-time 1530219951
@@ -159,35 +157,35 @@ summary moved git commands to its own package.  added test to makefile
 previous 9bb6a43001b9ee45675ece0d8e793d16e270210f Makefile
 filename Makefile
 	
-4e8a3451534e82b131a3c27fbcccadafb417de8f 60 60 7
+4e8a3451534e82b131a3c27fbcccadafb417de8f 60 59 7
 	.PHONY: fmt
-4e8a3451534e82b131a3c27fbcccadafb417de8f 61 61
+4e8a3451534e82b131a3c27fbcccadafb417de8f 61 60
 	fmt: ## runs fmt
-4e8a3451534e82b131a3c27fbcccadafb417de8f 62 62
+4e8a3451534e82b131a3c27fbcccadafb417de8f 62 61
 		go fmt $(NOVENDOR)
-4e8a3451534e82b131a3c27fbcccadafb417de8f 63 63
+4e8a3451534e82b131a3c27fbcccadafb417de8f 63 62
 	.PHONY: clean
-4e8a3451534e82b131a3c27fbcccadafb417de8f 64 64
+4e8a3451534e82b131a3c27fbcccadafb417de8f 64 63
 	clean: ## clean up 
-4e8a3451534e82b131a3c27fbcccadafb417de8f 65 65
+4e8a3451534e82b131a3c27fbcccadafb417de8f 65 64
 		rm -rf bin/*
-4e8a3451534e82b131a3c27fbcccadafb417de8f 66 66
+4e8a3451534e82b131a3c27fbcccadafb417de8f 66 65
 		rm -rf vendor/*
-6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 36 67 1
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 36 66 1
 	
-4e8a3451534e82b131a3c27fbcccadafb417de8f 68 68 4
+4e8a3451534e82b131a3c27fbcccadafb417de8f 68 67 4
 	.PHONY: help
-4e8a3451534e82b131a3c27fbcccadafb417de8f 69 69
+4e8a3451534e82b131a3c27fbcccadafb417de8f 69 68
 	help:  ## displays this message
-4e8a3451534e82b131a3c27fbcccadafb417de8f 70 70
+4e8a3451534e82b131a3c27fbcccadafb417de8f 70 69
 		@grep -E '^[ a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
-4e8a3451534e82b131a3c27fbcccadafb417de8f 71 71
+4e8a3451534e82b131a3c27fbcccadafb417de8f 71 70
 			awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
-6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 40 72 1
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 40 71 1
 			
-4e8a3451534e82b131a3c27fbcccadafb417de8f 73 73 3
+4e8a3451534e82b131a3c27fbcccadafb417de8f 73 72 3
 	.PHONY: version
-4e8a3451534e82b131a3c27fbcccadafb417de8f 74 74
+4e8a3451534e82b131a3c27fbcccadafb417de8f 74 73
 	version:  ## displays the version
-4e8a3451534e82b131a3c27fbcccadafb417de8f 75 75
+4e8a3451534e82b131a3c27fbcccadafb417de8f 75 74
 		@echo $(VERSION)
