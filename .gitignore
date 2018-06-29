@@ -14,6 +14,8 @@
 
 # dep file/folders
 vendor/*/
+/test/tests.*
+/test/coverage.*
 
 # any VI tmp files
 *.swp

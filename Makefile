@@ -1,47 +1,75 @@
-#GOPATH=$(shell pwd)/vendor:$(shell pwd)
-GOBIN=$(shell pwd)/bin
-GOFILES=$(wildcard *.go)
-GONAME=$(shell basename "$(PWD)")
-PID=/tmp/go-$(GONAME).pid
+NAME := go-git-fame
 
-dep:
+VERSION := v1.0.0
+
+LDFLAGS  := -ldflags="-s -w -X \"main.Version=$(VERSION)\" -X \"main.Revision=$(REVISION)\""
+
+GO_SRC_DIRS := $(shell \
+	find . -name "*.go" -not -path "./vendor/*" | \
+	xargs -I {} dirname {}  | \
+	uniq)
+
+GO_TEST_DIRS := $(shell \
+	find . -name "*_test.go" -not -path "./vendor/*" | \
+	xargs -I {} dirname {}  | \
+	uniq)
+
+NOVENDOR := $(shell go list ./... | grep -v vendor)
+
+TEST_PATTERN?=.
+
+TEST_OPTIONS?=-race -covermode=atomic -coverprofile=coverage.txt
+
+.DEFAULT_GOAL := bin/$(NAME)
+
+bin/$(NAME): $(GO_SRC_DIRS)
+	go build $(LDFLAGS) -o bin/$(NAME)
+
+.PHONY: setup 
+setup:  ## Installs all of the build and lint dependencies
+	go get -u gopkg.in/alecthomas/gometalinter.v2
+	go get -u github.com/golang/dep/cmd/dep
+	go get -u golang.org/x/tools/cmd/cover
+	go get -u golang.org/x/tools/cmd/goimports
 	dep ensure
+	gometalinter --install --update
 
-build:
-	  @echo "Building $(GOFILES) to ./bin"
-	    @GOPATH=$(GOPATH) GOBIN=$(GOBIN) go build -o bin/$(GONAME) $(GOFILES)
+.PHONY: dep
+dep:
+ifeq ($(shell command -v dep 2> /dev/null),)
+	go get -u -v github.com/golang/dep/cmd/dep
+endif
 
-get:
-	  @GOPATH=$(GOPATH) GOBIN=$(GOBIN) go get .
+.PHONY: deps
+deps: dep  ## ensure the dependencies are installed
+	dep ensure -v
 
-install:
-	  @GOPATH=$(GOPATH) GOBIN=$(GOBIN) go install $(GOFILES)
+.PHONY: install
+install:  ## runs install
+	go install $(LDFLAGS)
 
-run:
-	  @GOPATH=$(GOPATH) GOBIN=$(GOBIN) go run $(GOFILES)
+.PHONY: test
+test: ## runs test with coverage (doesn't produce a report)
+	echo 'mode: atomic' > bin/coverage.txt && go list ./... | xargs -n1 -I{} sh -c 'go test -covermode=atomic -coverprofile=bin/coverage.tmp {} && tail -n +2 bin/coverage.tmp >> bin/coverage.txt' && rm bin/coverage.tmp
+	#go test -cover -v $(NOVENDOR)
 
-watch:
-	  @$(MAKE) restart &
-	    @fswatch -o . -e 'bin/.*' | xargs -n1 -I{}  make restart
+.PHONY: cover
+cover: test ## Run all the tests and opens the coverage report
+		go tool cover -html=bin/coverage.txt
 
-restart: clear stop clean build start
+.PHONY: fmt
+fmt: ## runs fmt
+	go fmt $(NOVENDOR)
+.PHONY: clean
+clean: ## clean up 
+	rm -rf bin/*
+	rm -rf vendor/*
 
-start:
-	  @echo "Starting bin/$(GONAME)"
-	    @./bin/$(GONAME) & echo $$! > $(PID)
-
-stop:
-	  @echo "Stopping bin/$(GONAME) if it's running"
-	    @-kill `[[ -f $(PID) ]] && cat $(PID)` 2>/dev/null || true
-
-test:
-	go test -v ./git_client/... 
-
-clear:
-	  @clear
-
-clean:
-	  @echo "Cleaning"
-	    @GOPATH=$(GOPATH) GOBIN=$(GOBIN) go clean
-
-.PHONY: dep build get install run watch start stop restart clean
+.PHONY: help
+help:  ## displays this message
+	@grep -E '^[ a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+		
+.PHONY: version
+version:  ## displays the version
+	@echo $(VERSION)
