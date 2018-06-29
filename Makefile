@@ -51,7 +51,6 @@ install:  ## runs install
 .PHONY: test
 test: ## runs test with coverage (doesn't produce a report)
 	echo 'mode: atomic' > bin/coverage.txt && go list ./... | xargs -n1 -I{} sh -c 'go test -covermode=atomic -coverprofile=bin/coverage.tmp {} && tail -n +2 bin/coverage.tmp >> bin/coverage.txt' && rm bin/coverage.tmp
-	#go test -cover -v $(NOVENDOR)
 
 .PHONY: cover
 cover: test ## Run all the tests and opens the coverage report

@@ -1,0 +1,193 @@
+4e8a3451534e82b131a3c27fbcccadafb417de8f 1 1 1
+author Todd Bush
+author-mail <todd.bush@lexisnexis.com>
+author-time 1530285482
+author-tz -0400
+committer Todd Bush
+committer-mail <todd.bush@lexisnexis.com>
+committer-time 1530285482
+committer-tz -0400
+summary a better makefile, additional to .gitignore
+previous e5904fa21de8c70cb4dd8efe501a96db1f8fc073 Makefile
+filename Makefile
+	NAME := go-git-fame
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 6 2 1
+author Todd Bush
+author-mail <todd.bush@lexisnexis.com>
+author-time 1528849907
+author-tz -0400
+committer Todd Bush
+committer-mail <todd.bush@lexisnexis.com>
+committer-time 1528849907
+committer-tz -0400
+summary dropping mage, going with make
+filename Makefile
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 3 3 13
+	VERSION := v1.0.0
+4e8a3451534e82b131a3c27fbcccadafb417de8f 4 4
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 5 5
+	LDFLAGS  := -ldflags="-s -w -X \"main.Version=$(VERSION)\" -X \"main.Revision=$(REVISION)\""
+4e8a3451534e82b131a3c27fbcccadafb417de8f 6 6
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 7 7
+	GO_SRC_DIRS := $(shell \
+4e8a3451534e82b131a3c27fbcccadafb417de8f 8 8
+		find . -name "*.go" -not -path "./vendor/*" | \
+4e8a3451534e82b131a3c27fbcccadafb417de8f 9 9
+		xargs -I {} dirname {}  | \
+4e8a3451534e82b131a3c27fbcccadafb417de8f 10 10
+		uniq)
+4e8a3451534e82b131a3c27fbcccadafb417de8f 11 11
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 12 12
+	GO_TEST_DIRS := $(shell \
+4e8a3451534e82b131a3c27fbcccadafb417de8f 13 13
+		find . -name "*_test.go" -not -path "./vendor/*" | \
+4e8a3451534e82b131a3c27fbcccadafb417de8f 14 14
+		xargs -I {} dirname {}  | \
+4e8a3451534e82b131a3c27fbcccadafb417de8f 15 15
+		uniq)
+2d771acf6221ae4fc5e0bd0d8a4e3688b0e9c70a 9 16 1
+author Todd Bush
+author-mail <todd.bush@lexisnexis.com>
+author-time 1530205343
+author-tz -0400
+committer Todd Bush
+committer-mail <todd.bush@lexisnexis.com>
+committer-time 1530205343
+committer-tz -0400
+summary implementing get_list_files
+previous 538833812cb0f632cb0a045901c952e559ed4cae Makefile
+filename Makefile
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 17 17 1
+	NOVENDOR := $(shell go list ./... | grep -v vendor)
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 10 18 1
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 19 19 1
+	TEST_PATTERN?=.
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 13 20 1
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 21 21 1
+	TEST_OPTIONS?=-race -covermode=atomic -coverprofile=coverage.txt
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 16 22 1
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 23 23 1
+	.DEFAULT_GOAL := bin/$(NAME)
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 19 24 1
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 25 25 17
+	bin/$(NAME): $(GO_SRC_DIRS)
+4e8a3451534e82b131a3c27fbcccadafb417de8f 26 26
+		go build $(LDFLAGS) -o bin/$(NAME)
+4e8a3451534e82b131a3c27fbcccadafb417de8f 27 27
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 28 28
+	.PHONY: setup 
+4e8a3451534e82b131a3c27fbcccadafb417de8f 29 29
+	setup:  ## Installs all of the build and lint dependencies
+4e8a3451534e82b131a3c27fbcccadafb417de8f 30 30
+		go get -u gopkg.in/alecthomas/gometalinter.v2
+4e8a3451534e82b131a3c27fbcccadafb417de8f 31 31
+		go get -u github.com/golang/dep/cmd/dep
+4e8a3451534e82b131a3c27fbcccadafb417de8f 32 32
+		go get -u golang.org/x/tools/cmd/cover
+4e8a3451534e82b131a3c27fbcccadafb417de8f 33 33
+		go get -u golang.org/x/tools/cmd/goimports
+4e8a3451534e82b131a3c27fbcccadafb417de8f 34 34
+		dep ensure
+4e8a3451534e82b131a3c27fbcccadafb417de8f 35 35
+		gometalinter --install --update
+4e8a3451534e82b131a3c27fbcccadafb417de8f 36 36
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 37 37
+	.PHONY: dep
+4e8a3451534e82b131a3c27fbcccadafb417de8f 38 38
+	dep:
+4e8a3451534e82b131a3c27fbcccadafb417de8f 39 39
+	ifeq ($(shell command -v dep 2> /dev/null),)
+4e8a3451534e82b131a3c27fbcccadafb417de8f 40 40
+		go get -u -v github.com/golang/dep/cmd/dep
+4e8a3451534e82b131a3c27fbcccadafb417de8f 41 41
+	endif
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 23 42 1
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 43 43 3
+	.PHONY: deps
+4e8a3451534e82b131a3c27fbcccadafb417de8f 44 44
+	deps: dep  ## ensure the dependencies are installed
+4e8a3451534e82b131a3c27fbcccadafb417de8f 45 45
+		dep ensure -v
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 25 46 1
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 47 47 3
+	.PHONY: install
+4e8a3451534e82b131a3c27fbcccadafb417de8f 48 48
+	install:  ## runs install
+4e8a3451534e82b131a3c27fbcccadafb417de8f 49 49
+		go install $(LDFLAGS)
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 29 50 1
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 51 51 4
+	.PHONY: test
+4e8a3451534e82b131a3c27fbcccadafb417de8f 52 52
+	test: ## runs test with coverage (doesn't produce a report)
+4e8a3451534e82b131a3c27fbcccadafb417de8f 53 53
+		echo 'mode: atomic' > bin/coverage.txt && go list ./... | xargs -n1 -I{} sh -c 'go test -covermode=atomic -coverprofile=bin/coverage.tmp {} && tail -n +2 bin/coverage.tmp >> bin/coverage.txt' && rm bin/coverage.tmp
+4e8a3451534e82b131a3c27fbcccadafb417de8f 54 54
+		#go test -cover -v $(NOVENDOR)
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 33 55 1
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 56 56 3
+	.PHONY: cover
+4e8a3451534e82b131a3c27fbcccadafb417de8f 57 57
+	cover: test ## Run all the tests and opens the coverage report
+4e8a3451534e82b131a3c27fbcccadafb417de8f 58 58
+			go tool cover -html=bin/coverage.txt
+61eed218cc82bef65f9829190fc915a524dc6d33 39 59 1
+author Todd Bush
+author-mail <todd.bush@lexisnexis.com>
+author-time 1530219951
+author-tz -0400
+committer Todd Bush
+committer-mail <todd.bush@lexisnexis.com>
+committer-time 1530219951
+committer-tz -0400
+summary moved git commands to its own package.  added test to makefile
+previous 9bb6a43001b9ee45675ece0d8e793d16e270210f Makefile
+filename Makefile
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 60 60 7
+	.PHONY: fmt
+4e8a3451534e82b131a3c27fbcccadafb417de8f 61 61
+	fmt: ## runs fmt
+4e8a3451534e82b131a3c27fbcccadafb417de8f 62 62
+		go fmt $(NOVENDOR)
+4e8a3451534e82b131a3c27fbcccadafb417de8f 63 63
+	.PHONY: clean
+4e8a3451534e82b131a3c27fbcccadafb417de8f 64 64
+	clean: ## clean up 
+4e8a3451534e82b131a3c27fbcccadafb417de8f 65 65
+		rm -rf bin/*
+4e8a3451534e82b131a3c27fbcccadafb417de8f 66 66
+		rm -rf vendor/*
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 36 67 1
+	
+4e8a3451534e82b131a3c27fbcccadafb417de8f 68 68 4
+	.PHONY: help
+4e8a3451534e82b131a3c27fbcccadafb417de8f 69 69
+	help:  ## displays this message
+4e8a3451534e82b131a3c27fbcccadafb417de8f 70 70
+		@grep -E '^[ a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
+4e8a3451534e82b131a3c27fbcccadafb417de8f 71 71
+			awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
+6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 40 72 1
+			
+4e8a3451534e82b131a3c27fbcccadafb417de8f 73 73 3
+	.PHONY: version
+4e8a3451534e82b131a3c27fbcccadafb417de8f 74 74
+	version:  ## displays the version
+4e8a3451534e82b131a3c27fbcccadafb417de8f 75 75
+		@echo $(VERSION)
