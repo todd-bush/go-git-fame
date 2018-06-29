@@ -18,3 +18,10 @@ func Test_git_list_files(t *testing.T) {
 	fmt.Printf("files: %v\n", files)
 
 }
+
+func Test_branch_exist(t *testing.T) {
+	is := is.New(t)
+
+	is.True(branch_exists("master"))
+	is.True(!branch_exists("no-branch-name"))
+}
