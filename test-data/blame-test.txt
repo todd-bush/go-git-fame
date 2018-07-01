@@ -22,15 +22,15 @@ committer-time 1528849907
 committer-tz -0400
 summary dropping mage, going with make
 filename Makefile
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 3 3 13
 	VERSION := v1.0.0
 4e8a3451534e82b131a3c27fbcccadafb417de8f 4 4
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 5 5
 	LDFLAGS  := -ldflags="-s -w -X \"main.Version=$(VERSION)\" -X \"main.Revision=$(REVISION)\""
 4e8a3451534e82b131a3c27fbcccadafb417de8f 6 6
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 7 7
 	GO_SRC_DIRS := $(shell \
 4e8a3451534e82b131a3c27fbcccadafb417de8f 8 8
@@ -40,7 +40,7 @@ filename Makefile
 4e8a3451534e82b131a3c27fbcccadafb417de8f 10 10
 		uniq)
 4e8a3451534e82b131a3c27fbcccadafb417de8f 11 11
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 12 12
 	GO_TEST_DIRS := $(shell \
 4e8a3451534e82b131a3c27fbcccadafb417de8f 13 13
@@ -61,31 +61,31 @@ committer-tz -0400
 summary implementing get_list_files
 previous 538833812cb0f632cb0a045901c952e559ed4cae Makefile
 filename Makefile
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 17 17 1
 	NOVENDOR := $(shell go list ./... | grep -v vendor)
 6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 10 18 1
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 19 19 1
 	TEST_PATTERN?=.
 6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 13 20 1
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 21 21 1
 	TEST_OPTIONS?=-race -covermode=atomic -coverprofile=coverage.txt
 6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 16 22 1
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 23 23 1
 	.DEFAULT_GOAL := bin/$(NAME)
 6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 19 24 1
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 25 25 17
 	bin/$(NAME): $(GO_SRC_DIRS)
 4e8a3451534e82b131a3c27fbcccadafb417de8f 26 26
 		go build $(LDFLAGS) -o bin/$(NAME)
 4e8a3451534e82b131a3c27fbcccadafb417de8f 27 27
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 28 28
-	.PHONY: setup 
+	.PHONY: setup
 4e8a3451534e82b131a3c27fbcccadafb417de8f 29 29
 	setup:  ## Installs all of the build and lint dependencies
 4e8a3451534e82b131a3c27fbcccadafb417de8f 30 30
@@ -101,7 +101,7 @@ filename Makefile
 4e8a3451534e82b131a3c27fbcccadafb417de8f 35 35
 		gometalinter --install --update
 4e8a3451534e82b131a3c27fbcccadafb417de8f 36 36
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 37 37
 	.PHONY: dep
 4e8a3451534e82b131a3c27fbcccadafb417de8f 38 38
@@ -113,7 +113,7 @@ filename Makefile
 4e8a3451534e82b131a3c27fbcccadafb417de8f 41 41
 	endif
 6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 23 42 1
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 43 43 3
 	.PHONY: deps
 4e8a3451534e82b131a3c27fbcccadafb417de8f 44 44
@@ -121,7 +121,7 @@ filename Makefile
 4e8a3451534e82b131a3c27fbcccadafb417de8f 45 45
 		dep ensure -v
 6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 25 46 1
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 47 47 3
 	.PHONY: install
 4e8a3451534e82b131a3c27fbcccadafb417de8f 48 48
@@ -129,7 +129,7 @@ filename Makefile
 4e8a3451534e82b131a3c27fbcccadafb417de8f 49 49
 		go install $(LDFLAGS)
 6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 29 50 1
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 51 51 3
 	.PHONY: test
 4e8a3451534e82b131a3c27fbcccadafb417de8f 52 52
@@ -137,7 +137,7 @@ filename Makefile
 4e8a3451534e82b131a3c27fbcccadafb417de8f 53 53
 		echo 'mode: atomic' > bin/coverage.txt && go list ./... | xargs -n1 -I{} sh -c 'go test -covermode=atomic -coverprofile=bin/coverage.tmp {} && tail -n +2 bin/coverage.tmp >> bin/coverage.txt' && rm bin/coverage.tmp
 6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 33 54 1
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 56 55 3
 	.PHONY: cover
 4e8a3451534e82b131a3c27fbcccadafb417de8f 57 56
@@ -156,7 +156,7 @@ committer-tz -0400
 summary moved git commands to its own package.  added test to makefile
 previous 9bb6a43001b9ee45675ece0d8e793d16e270210f Makefile
 filename Makefile
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 60 59 7
 	.PHONY: fmt
 4e8a3451534e82b131a3c27fbcccadafb417de8f 61 60
@@ -166,13 +166,13 @@ filename Makefile
 4e8a3451534e82b131a3c27fbcccadafb417de8f 63 62
 	.PHONY: clean
 4e8a3451534e82b131a3c27fbcccadafb417de8f 64 63
-	clean: ## clean up 
+	clean: ## clean up
 4e8a3451534e82b131a3c27fbcccadafb417de8f 65 64
 		rm -rf bin/*
 4e8a3451534e82b131a3c27fbcccadafb417de8f 66 65
 		rm -rf vendor/*
 6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 36 66 1
-	
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 68 67 4
 	.PHONY: help
 4e8a3451534e82b131a3c27fbcccadafb417de8f 69 68
@@ -182,7 +182,7 @@ filename Makefile
 4e8a3451534e82b131a3c27fbcccadafb417de8f 71 70
 			awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 6f21e5a7b9bd60cd4cf5d7699bbe1f66751d3935 40 71 1
-			
+
 4e8a3451534e82b131a3c27fbcccadafb417de8f 73 72 3
 	.PHONY: version
 4e8a3451534e82b131a3c27fbcccadafb417de8f 74 73
