@@ -2,6 +2,7 @@ package parser
 
 import (
 	"fmt"
+	log "github.com/sirupsen/logrus"
 	"regexp"
 	"strconv"
 	"strings"
@@ -27,9 +28,6 @@ func current_line(bl BlameLines) string {
 }
 
 func at_end(bl BlameLines) bool {
-
-	fmt.Printf("in at_end- len=%d, ptr=%d\n", len(bl.lines), bl.index_ptr)
-
 	return len(bl.lines)-1 == bl.index_ptr
 }
 
@@ -55,26 +53,17 @@ func Parse(all_lines string) {
 
 	blame_lines := BlameLines{lines: lines, index_ptr: inx}
 
-	fmt.Println("Parse ptr = ", blame_lines.index_ptr)
-
 	chunks := []BlameData{}
 
 	for {
 
 		blame_lines.index_ptr = inx
 
-		fmt.Println("beging of loop ptr=", blame_lines.index_ptr)
 		header, blame_lines := ParseHeader(blame_lines)
-		fmt.Println("After Header ptr = ", blame_lines.index_ptr)
 		extracted_lines, blame_lines := ParseLines(blame_lines, header.num_lines)
 		header.other_lines = append(header.other_lines, extracted_lines...)
 
-		fmt.Println("after Parse Linesptr = ", blame_lines.index_ptr)
-
 		chunks = append(chunks, header)
-
-		fmt.Printf("%v\n", lines)
-		fmt.Println("---")
 
 		inx = blame_lines.index_ptr
 
@@ -84,8 +73,7 @@ func Parse(all_lines string) {
 
 	}
 
-	fmt.Println("+++++")
-	fmt.Printf("%v\n", chunks)
+	log.Debug(fmt.Sprintf("%v\n", chunks))
 
 }
 
@@ -114,7 +102,6 @@ func ParseHeader(blame_lines BlameLines) (BlameData, BlameLines) {
 
 	for {
 		trash := shift(&blame_lines)
-		fmt.Println("inside ParseHeaders ptr = ", blame_lines.index_ptr)
 		if strings.HasPrefix(trash, "filename") || at_end(blame_lines) {
 			break
 		}

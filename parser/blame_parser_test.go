@@ -1,8 +1,7 @@
 package parser
 
 import (
-	//	"fmt"
-	"github.com/matryer/is"
+	"github.com/stretchr/testify/assert"
 	"io/ioutil"
 	"strings"
 	"testing"
@@ -24,8 +23,6 @@ func LoadTest() string {
 
 func Test_Parse(t *testing.T) {
 
-	is.New(t)
-
 	lines := LoadTest()
 
 	Parse(lines)
@@ -33,7 +30,6 @@ func Test_Parse(t *testing.T) {
 }
 
 func Test_ParseHeader(t *testing.T) {
-	is := is.New(t)
 
 	file_lines := strings.Split(LoadTest(), "\n")
 
@@ -43,14 +39,13 @@ func Test_ParseHeader(t *testing.T) {
 
 	t.Log(header)
 
-	is.Equal(header.oid, "4e8a3451534e82b131a3c27fbcccadafb417de8f")
-	is.Equal(header.num_lines, 1)
-	is.Equal(header.author, "Todd Bush")
+	assert.Equal(t, header.oid, "4e8a3451534e82b131a3c27fbcccadafb417de8f")
+	assert.Equal(t, header.num_lines, 1)
+	assert.Equal(t, header.author, "Todd Bush")
 
 }
 
 func Test_ParseLines(t *testing.T) {
-	is := is.New(t)
 
 	file_lines := strings.Split(LoadTest(), "\n")
 	lines := file_lines[13:20]
@@ -59,6 +54,6 @@ func Test_ParseLines(t *testing.T) {
 
 	extracted_lines, bl := ParseLines(bl, 1)
 
-	is.Equal(len(extracted_lines), 1)
+	assert.Equal(t, len(extracted_lines), 1)
 
 }
