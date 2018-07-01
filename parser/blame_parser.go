@@ -45,7 +45,7 @@ type commits map[string]BlameData
 
 var Commits commits = make(commits)
 
-func Parse(all_lines string) {
+func Parse(all_lines string) []BlameData {
 
 	lines := strings.Split(all_lines, "\n")
 
@@ -75,6 +75,7 @@ func Parse(all_lines string) {
 
 	log.Debug(fmt.Sprintf("%v\n", chunks))
 
+	return chunks
 }
 
 func ParseHeader(blame_lines BlameLines) (BlameData, BlameLines) {

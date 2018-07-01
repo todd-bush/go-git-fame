@@ -1,11 +1,19 @@
 package parser
 
 import (
+	"fmt"
+	log "github.com/sirupsen/logrus"
 	"github.com/stretchr/testify/assert"
 	"io/ioutil"
+	"os"
 	"strings"
 	"testing"
 )
+
+func TestMain(m *testing.M) {
+	log.SetLevel(log.DebugLevel)
+	log.SetOutput(os.Stdout)
+}
 
 func LoadTest() string {
 
@@ -23,10 +31,15 @@ func LoadTest() string {
 
 func Test_Parse(t *testing.T) {
 
+	assert := assert.New(t)
 	lines := LoadTest()
 
-	Parse(lines)
+	data := Parse(lines)
 
+	t.Log(fmt.Sprintf("Parse Data: %v\n", data))
+
+	assert.Equal(len(data), 3)
+	assert.Equal(data[0].oid, "4e8a3451534e82b131a3c27fbcccadafb417de8f")
 }
 
 func Test_ParseHeader(t *testing.T) {
