@@ -52,7 +52,7 @@ func BranchExists(branch string) bool {
 
 	show_out, _ := show_cmd.Output()
 
-	//fmt.Println(string(show_out))
+	log.Debug(string(show_out))
 
 	return len(string(show_out)) > 0
 }
