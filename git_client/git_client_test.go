@@ -6,9 +6,9 @@ import (
 	"testing"
 )
 
-func Test_git_list_files(t *testing.T) {
+func Test_GitListFiles(t *testing.T) {
 
-	files := git_list_files("master")
+	files := GitListFiles("master")
 
 	assert.Equal(t, len(files) > 0, true)
 
@@ -16,8 +16,16 @@ func Test_git_list_files(t *testing.T) {
 
 }
 
-func Test_branch_exist(t *testing.T) {
+func Test_BranchExists(t *testing.T) {
 
-	assert.Equal(t, branch_exists("master"), true)
-	assert.Equal(t, branch_exists("no-branch-name"), false)
+	assert.Equal(t, BranchExists("master"), true)
+	assert.Equal(t, BranchExists("no-branch-name"), false)
+}
+
+func Test_GitBlame(t *testing.T) {
+	lines := GitBlame("../Makefile") // include path
+
+	assert.NotNil(t, lines)
+	assert.Equal(t, len(lines) > 190, true)
+
 }
