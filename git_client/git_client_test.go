@@ -2,26 +2,22 @@ package git
 
 import (
 	"fmt"
+	"github.com/stretchr/testify/assert"
 	"testing"
-
-	"github.com/matryer/is"
 )
 
 func Test_git_list_files(t *testing.T) {
 
-	is := is.New(t)
-
 	files := git_list_files("master")
 
-	is.True(len(files) > 0)
+	assert.Equal(t, len(files) > 0, true)
 
 	fmt.Printf("files: %v\n", files)
 
 }
 
 func Test_branch_exist(t *testing.T) {
-	is := is.New(t)
 
-	is.True(branch_exists("master"))
-	is.True(!branch_exists("no-branch-name"))
+	assert.Equal(t, branch_exists("master"), true)
+	assert.Equal(t, branch_exists("no-branch-name"), false)
 }

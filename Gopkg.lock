@@ -8,12 +8,6 @@
   version = "v1.1.0"
 
 [[projects]]
-  name = "github.com/matryer/is"
-  packages = ["."]
-  revision = "5f0030ca4decdf2e702be47575d88eabf610593e"
-  version = "v1.1.0"
-
-[[projects]]
   name = "github.com/pmezard/go-difflib"
   packages = ["difflib"]
   revision = "792786c7400a136282c1664665ae0a8db921c6c2"
@@ -49,6 +43,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8dc31a01e0ec8fe1d21dc7c8c5134e8aa97c8f49d53879577eace5166a19dd4d"
+  inputs-digest = "77dbdfdccf59b79fed03475db64423902cde05b15f7ede3b829765677c0f6e6d"
   solver-name = "gps-cdcl"
   solver-version = 1
