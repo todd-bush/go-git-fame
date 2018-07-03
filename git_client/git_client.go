@@ -17,6 +17,24 @@ func handle_error(err error, stderr io.Reader) {
 
 }
 
+func ExecuteGitCommand(command string) []string {
+
+	git_cmd := exec.Command("bash", "-c", command)
+
+	stderr, _ := git_cmd.StderrPipe()
+
+	git_out, err := git_cmd.Output()
+
+	if err != nil {
+		handle_error(err, stderr)
+	}
+
+	lines := strings.Split(string(git_out), "\n")
+
+	return lines
+
+}
+
 /*
 	preforms a 'git ls-tree' on the branch arguments.
 	returns a list of files.
@@ -25,19 +43,7 @@ func GitListFiles(branch string) []string {
 
 	git_cmd := fmt.Sprintf("git ls-tree -r --name-only %s", branch)
 
-	ls_cmd := exec.Command("bash", "-c", git_cmd)
-
-	stderr, _ := ls_cmd.StderrPipe()
-
-	ls_out, err := ls_cmd.Output()
-
-	if err != nil {
-		handle_error(err, stderr)
-	}
-
-	files := strings.Split(string(ls_out), "\n")
-
-	return files
+	return ExecuteGitCommand(git_cmd)
 
 }
 
@@ -52,31 +58,25 @@ func BranchExists(branch string) bool {
 
 	show_out, _ := show_cmd.Output()
 
-	log.Debug(string(show_out))
-
 	return len(string(show_out)) > 0
 }
 
 /*
 Performs a 'git blame' on the file argument
-returns the blame output
+returns output as string slice
 */
 func GitBlame(file string) []string {
 	git_cmd := fmt.Sprintf("git blame -M -p -w -- '%s'", file)
 
-	fmt.Println(git_cmd)
+	return ExecuteGitCommand(git_cmd)
+}
 
-	blame_cmd := exec.Command("bash", "-c", git_cmd)
+/*
+Performs a 'git shortlog' on the current directory
+returns output as string slice
+*/
+func GitShortLog() []string {
+	git_cmd := "git shortlog -s -e"
 
-	stderr, _ := blame_cmd.StderrPipe()
-
-	blame_out, err := blame_cmd.Output()
-
-	if err != nil {
-		handle_error(err, stderr)
-	}
-
-	lines := strings.Split(string(blame_out), "\n")
-
-	return lines
+	return ExecuteGitCommand(git_cmd)
 }

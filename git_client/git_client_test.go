@@ -29,3 +29,12 @@ func Test_GitBlame(t *testing.T) {
 	assert.Equal(t, len(lines) > 190, true)
 
 }
+
+func Test_GitShortLog(t *testing.T) {
+	lines := GitShortLog()
+
+	t.Log(lines)
+
+	assert.NotNil(t, lines)
+	//assert.Equal(t, len(lines) > 1, true)
+}
