@@ -31,10 +31,11 @@ func Test_GitBlame(t *testing.T) {
 }
 
 func Test_GitShortLog(t *testing.T) {
+
 	lines := GitShortLog()
 
-	t.Log(lines)
+	//t.Log(lines)
 
 	assert.NotNil(t, lines)
-	//assert.Equal(t, len(lines) > 1, true)
+	assert.Equal(t, len(lines) > 1, true)
 }

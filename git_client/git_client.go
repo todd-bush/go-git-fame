@@ -3,30 +3,16 @@ package git
 import (
 	"fmt"
 	log "github.com/sirupsen/logrus"
-	"io"
-	"io/ioutil"
 	"os/exec"
 	"strings"
 )
 
-func handle_error(err error, stderr io.Reader) {
-
-	slurp, _ := ioutil.ReadAll(stderr)
-	fmt.Printf("slurp: %s\n", slurp)
-	log.Fatalf("%T\n", err)
-
-}
-
 func ExecuteGitCommand(command string) []string {
 
-	git_cmd := exec.Command("bash", "-c", command)
-
-	stderr, _ := git_cmd.StderrPipe()
-
-	git_out, err := git_cmd.Output()
+	git_out, err := exec.Command("sh", "-c", command).Output()
 
 	if err != nil {
-		handle_error(err, stderr)
+		log.Fatalf("%T\n", err)
 	}
 
 	lines := strings.Split(string(git_out), "\n")
@@ -54,9 +40,7 @@ boolean if the branch exists or not
 func BranchExists(branch string) bool {
 	git_cmd := fmt.Sprintf("git show-ref %s", branch)
 
-	show_cmd := exec.Command("bash", "-c", git_cmd)
-
-	show_out, _ := show_cmd.Output()
+	show_out, _ := exec.Command("bash", "-c", git_cmd).Output()
 
 	return len(string(show_out)) > 0
 }
@@ -76,7 +60,7 @@ Performs a 'git shortlog' on the current directory
 returns output as string slice
 */
 func GitShortLog() []string {
-	git_cmd := "git shortlog -s -e"
+	short_cmd := "git log --pretty=short | git shortlog -nse"
 
-	return ExecuteGitCommand(git_cmd)
+	return ExecuteGitCommand(short_cmd)
 }
