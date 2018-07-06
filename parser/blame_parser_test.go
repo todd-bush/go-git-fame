@@ -30,7 +30,9 @@ func LoadTest() string {
 func Test_Parse(t *testing.T) {
 
 	assert := assert.New(t)
-	lines := LoadTest()
+	all_lines := LoadTest()
+
+	lines := strings.Split(all_lines, "\n")
 
 	data := Parse(lines)
 

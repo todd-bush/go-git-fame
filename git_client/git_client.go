@@ -52,6 +52,8 @@ returns output as string slice
 func GitBlame(file string) []string {
 	git_cmd := fmt.Sprintf("git blame -M -p -w -- '%s'", file)
 
+	log.Debugf("running Blame on file: %s", file)
+
 	return ExecuteGitCommand(git_cmd)
 }
 

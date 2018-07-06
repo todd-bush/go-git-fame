@@ -45,11 +45,11 @@ type commits map[string]BlameData
 
 var Commits commits = make(commits)
 
-func Parse(all_lines string) []BlameData {
-
-	lines := strings.Split(all_lines, "\n")
+func Parse(lines []string) []BlameData {
 
 	inx := 0
+
+	log.Debugf("beginning parse on lines: %v", lines)
 
 	blame_lines := BlameLines{lines: lines, index_ptr: inx}
 
@@ -83,6 +83,8 @@ func ParseHeader(blame_lines BlameLines) (BlameData, BlameLines) {
 
 	headerline := shift(&blame_lines)
 
+	log.Debugf("parsing header line: %s", headerline)
+
 	pieces := r.FindStringSubmatch(headerline)
 	numlines, _ := strconv.Atoi(pieces[4])
 
@@ -94,18 +96,21 @@ func ParseHeader(blame_lines BlameLines) (BlameData, BlameLines) {
 		bd.time = strings.TrimPrefix(shift(&blame_lines), "author-time ")
 		bd.tz = strings.TrimPrefix(shift(&blame_lines), "author-tz ")
 		Commits[bd.oid] = bd
-	} else {
-		bd = Commits[bd.oid]
-		bd.num_lines = numlines
-	}
 
-	// get to filename
+		// get to filename
 
-	for {
-		trash := shift(&blame_lines)
-		if strings.HasPrefix(trash, "filename") || at_end(blame_lines) {
-			break
+		for {
+			trash := shift(&blame_lines)
+			if strings.HasPrefix(trash, "filename") || at_end(blame_lines) {
+				break
+			}
 		}
+
+	} else {
+		log.Debugf("using found data: %s", bd.oid)
+		bd = Commits[bd.oid]
+		log.Debugf("found bd data with author: %s", bd.author)
+		bd.num_lines = numlines
 	}
 
 	return bd, blame_lines
@@ -114,7 +119,11 @@ func ParseHeader(blame_lines BlameLines) (BlameData, BlameLines) {
 func ParseLines(lines BlameLines, num int) ([]string, BlameLines) {
 	extracted := []string{}
 
-	for i := 0; i < num; i++ {
+	process_lines := num*2 - 1
+
+	log.Debugf("processing %d lines starting with %s", process_lines, lines.lines[lines.index_ptr])
+
+	for i := 0; i < process_lines; i++ {
 		extracted = append(extracted, shift(&lines))
 	}
 
