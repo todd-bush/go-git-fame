@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	log "github.com/sirupsen/logrus"
 	"regexp"
 	"strconv"
@@ -73,8 +72,6 @@ func Parse(lines []string) []BlameData {
 
 	}
 
-	log.Debug(fmt.Sprintf("%v\n", chunks))
-
 	return chunks
 }
 
@@ -83,7 +80,7 @@ func ParseHeader(blame_lines BlameLines) (BlameData, BlameLines) {
 
 	headerline := shift(&blame_lines)
 
-	log.Debugf("parsing header line: %s", headerline)
+	log.Infof("parsing header line: %s", headerline)
 
 	pieces := r.FindStringSubmatch(headerline)
 	numlines, _ := strconv.Atoi(pieces[4])
@@ -121,7 +118,7 @@ func ParseLines(lines BlameLines, num int) ([]string, BlameLines) {
 
 	process_lines := num*2 - 1
 
-	log.Debugf("processing %d lines starting with %s", process_lines, lines.lines[lines.index_ptr])
+	log.Infof("processing %d lines starting with %s", process_lines, lines.lines[lines.index_ptr])
 
 	for i := 0; i < process_lines; i++ {
 		extracted = append(extracted, shift(&lines))

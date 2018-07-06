@@ -35,7 +35,7 @@ func ExecuteProcessor() []ProcessOutput {
 	// get this list of files
 	file_list := git.GitListFiles("master") // TODO need to pass in branch
 
-	log.Debugf("found %d files to procesn", len(file_list))
+	log.Infof("found %d files to procesn", len(file_list))
 
 	blame_out := []BlameProcess{}
 
@@ -57,7 +57,7 @@ func ExecuteProcessor() []ProcessOutput {
 
 	for _, bi := range blame_out {
 
-		log.Debugf("parsing blame on file: %s", bi.file)
+		log.Infof("parsing blame on file: %s", bi.file)
 
 		blame_out := parser.Parse(bi.blame_lines)
 		blame_collector = append(blame_collector, BlameOutput{
@@ -65,8 +65,6 @@ func ExecuteProcessor() []ProcessOutput {
 			blame_data: blame_out,
 		})
 	}
-
-	log.Debug(blame_collector)
 
 	return result
 
