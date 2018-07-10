@@ -4,6 +4,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	git "github.com/todd-bush/go-git-fame/git_client"
 	"github.com/todd-bush/go-git-fame/parser"
+	"regexp"
+	"strconv"
 )
 
 type BlameOutput struct {
@@ -68,4 +70,27 @@ func ExecuteProcessor() []ProcessOutput {
 
 	return result
 
+}
+
+func GatherCommits() map[string]int {
+	result := map[string]int{}
+
+	commit_lines := git.GitShortLog()
+
+	r, _ := regexp.Compile(`(\d+)\s+(.+)\s+<(.+?)>`)
+
+	for _, commit_line := range commit_lines {
+
+		if len(commit_line) > 0 {
+
+			log.Debugf("parsing line %s", commit_line)
+			peices := r.FindStringSubmatch(commit_line)
+
+			log.Debugf("peices = %v", peices)
+			commits, _ := strconv.Atoi(peices[0])
+			result[peices[2]] = commits
+		}
+	}
+
+	return result
 }
