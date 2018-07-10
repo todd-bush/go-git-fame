@@ -24,6 +24,11 @@ func Test_GatherBlame(t *testing.T) {
 	blame_results := GatherBlame("master")
 
 	assert.NotNil(t, blame_results)
+	assert.Equal(t, len(blame_results) > 0, true)
+
+	for _, result := range blame_results {
+		log.Debugf("blame results for file %s", result.file)
+	}
 
 }
 
