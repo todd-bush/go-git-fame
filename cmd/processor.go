@@ -34,8 +34,14 @@ func ExecuteProcessor() []ProcessOutput {
 
 	result := []ProcessOutput{}
 
+	return result
+
+}
+
+func GatherBlame(branch string) []BlameOutput {
+
 	// get this list of files
-	file_list := git.GitListFiles("master") // TODO need to pass in branch
+	file_list := git.GitListFiles(branch)
 
 	log.Infof("found %d files to procesn", len(file_list))
 
@@ -68,8 +74,7 @@ func ExecuteProcessor() []ProcessOutput {
 		})
 	}
 
-	return result
-
+	return blame_collector
 }
 
 func GatherCommits() map[string]int {
@@ -87,8 +92,8 @@ func GatherCommits() map[string]int {
 			peices := r.FindStringSubmatch(commit_line)
 
 			log.Debugf("peices = %v", peices)
-			commits, _ := strconv.Atoi(peices[0])
-			result[peices[2]] = commits
+			commits, _ := strconv.Atoi(peices[1])
+			result[peices[3]] = commits
 		}
 	}
 
