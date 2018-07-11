@@ -7,15 +7,19 @@ import (
 	"testing"
 )
 
+func Test_Main(t *testing.T) {
+	log.SetLevel(log.WarnLevel)
+}
+
 func Test_ExecuteProcessor(t *testing.T) {
 
 	log.Debugln(" starting processor testing")
 
 	os.Chdir("../")
 
-	ExecuteProcessor()
+	result := ExecuteProcessor()
 
-	assert.Equal(t, true, true)
+	assert.Equal(t, len(result) > 0, true)
 
 }
 

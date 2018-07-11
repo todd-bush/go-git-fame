@@ -15,9 +15,9 @@ type BlameOutput struct {
 
 type ProcessOutput struct {
 	author       string
-	loc          int32
-	commits      int32
-	files        int32
+	loc          int
+	commits      int
+	files        int
 	loc_perc     float32
 	commits_perc float32
 	files_perc   float32
@@ -30,9 +30,41 @@ type BlameProcess struct {
 
 func ExecuteProcessor() []ProcessOutput {
 
-	log.SetLevel(log.DebugLevel)
-
 	result := []ProcessOutput{}
+
+	blame_output := GatherBlame("master") // TODO should be an argument
+	commits := GatherCommits()
+
+	for _, blame := range blame_output {
+		for _, data := range blame.blame_data {
+
+			author_data := ProcessOutput{}
+
+			for i := range result {
+				if result[i].author == data.Mail {
+					author_data = result[i]
+					break
+				}
+			}
+
+			if len(author_data.author) == 0 {
+				author_data := ProcessOutput{
+					author: data.Mail,
+					loc:    0,
+				}
+				result = append(result, author_data)
+			}
+
+			com := 0
+
+			if val, ok := commits[data.Mail]; ok {
+				com = val
+			}
+
+			author_data.loc += data.Num_lines
+			author_data.commits = com
+		}
+	}
 
 	return result
 
@@ -43,7 +75,7 @@ func GatherBlame(branch string) []BlameOutput {
 	// get this list of files
 	file_list := git.GitListFiles(branch)
 
-	log.Infof("found %d files to procesn", len(file_list))
+	log.Infof("found %d files to process", len(file_list))
 
 	blame_out := []BlameProcess{}
 

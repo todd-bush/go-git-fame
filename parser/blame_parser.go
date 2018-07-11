@@ -32,9 +32,9 @@ func at_end(bl BlameLines) bool {
 
 type BlameData struct {
 	oid         string
-	author      string
-	num_lines   int
-	mail        string
+	Author      string
+	Num_lines   int
+	Mail        string
 	time        string
 	tz          string
 	other_lines []string
@@ -59,7 +59,7 @@ func Parse(lines []string) []BlameData {
 		blame_lines.index_ptr = inx
 
 		header, blame_lines := ParseHeader(blame_lines)
-		extracted_lines, blame_lines := ParseLines(blame_lines, header.num_lines)
+		extracted_lines, blame_lines := ParseLines(blame_lines, header.Num_lines)
 		header.other_lines = append(header.other_lines, extracted_lines...)
 
 		chunks = append(chunks, header)
@@ -85,11 +85,11 @@ func ParseHeader(blame_lines BlameLines) (BlameData, BlameLines) {
 	pieces := r.FindStringSubmatch(headerline)
 	numlines, _ := strconv.Atoi(pieces[4])
 
-	bd := BlameData{oid: pieces[1], num_lines: numlines}
+	bd := BlameData{oid: pieces[1], Num_lines: numlines}
 
 	if strings.HasPrefix(current_line(blame_lines), "author") {
-		bd.author = strings.TrimPrefix(shift(&blame_lines), "author ")
-		bd.mail = strings.TrimPrefix(shift(&blame_lines), "author-mail ")
+		bd.Author = strings.TrimPrefix(shift(&blame_lines), "author ")
+		bd.Mail = strings.TrimPrefix(shift(&blame_lines), "author-mail ")
 		bd.time = strings.TrimPrefix(shift(&blame_lines), "author-time ")
 		bd.tz = strings.TrimPrefix(shift(&blame_lines), "author-tz ")
 		Commits[bd.oid] = bd
@@ -106,8 +106,8 @@ func ParseHeader(blame_lines BlameLines) (BlameData, BlameLines) {
 	} else {
 		log.Debugf("using found data: %s", bd.oid)
 		bd = Commits[bd.oid]
-		log.Debugf("found bd data with author: %s", bd.author)
-		bd.num_lines = numlines
+		log.Debugf("found bd data with author: %s", bd.Author)
+		bd.Num_lines = numlines
 	}
 
 	return bd, blame_lines
