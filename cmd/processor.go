@@ -19,6 +19,7 @@ type ProcessOutput struct {
 	loc          int
 	commits      int
 	files        map[string]bool
+	file_count   int
 	loc_perc     float32
 	commits_perc float32
 	files_perc   float32
@@ -78,6 +79,23 @@ func ExecuteProcessor() []ProcessOutput {
 			author_data.loc += data.Num_lines
 			author_data.commits = com
 		}
+	}
+
+	// now do the counts and totals
+	total_commits, total_loc, total_files := 0, 0, 0
+
+	for _, out := range result {
+		out.file_count = len(out.files)
+		total_commits += out.commits
+		total_loc += out.loc
+		total_files += out.file_count
+	}
+
+	// now the %s
+	for _, per := range result {
+		per.loc_perc = float32(per.loc) / float32(total_loc) * float32(100)
+		per.commits_perc = float32(per.commits) / float32(total_commits) * float32(100)
+		per.files_perc = float32(per.file_count) / float32(total_files) * float32(100)
 	}
 
 	return result
