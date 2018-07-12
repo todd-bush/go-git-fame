@@ -15,6 +15,7 @@ type BlameOutput struct {
 
 type ProcessOutput struct {
 	author       string
+	email        string
 	loc          int
 	commits      int
 	files        map[string]bool
@@ -46,15 +47,16 @@ func ExecuteProcessor() []ProcessOutput {
 			var author_data ProcessOutput
 
 			for i := range result {
-				if result[i].author == data.Mail {
+				if result[i].email == data.Mail {
 					author_data = result[i]
 					break
 				}
 			}
 
-			if len(author_data.author) == 0 {
+			if len(author_data.email) == 0 {
 				author_data = ProcessOutput{
-					author:  data.Mail,
+					author:  data.Author,
+					email:   data.Mail,
 					loc:     0,
 					commits: 0,
 					files:   make(map[string]bool),
