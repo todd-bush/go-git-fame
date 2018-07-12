@@ -54,8 +54,8 @@ func Test_ParseHeader(t *testing.T) {
 	t.Log(header)
 
 	assert.Equal(t, header.oid, "4e8a3451534e82b131a3c27fbcccadafb417de8f")
-	assert.Equal(t, header.num_lines, 1)
-	assert.Equal(t, header.author, "Todd Bush")
+	assert.Equal(t, header.Num_lines, 1)
+	assert.Equal(t, header.Author, "Todd Bush")
 
 }
 

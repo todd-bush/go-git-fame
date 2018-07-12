@@ -17,7 +17,7 @@ type ProcessOutput struct {
 	author       string
 	loc          int
 	commits      int
-	files        int
+	files        map[string]bool
 	loc_perc     float32
 	commits_perc float32
 	files_perc   float32
@@ -36,9 +36,14 @@ func ExecuteProcessor() []ProcessOutput {
 	commits := GatherCommits()
 
 	for _, blame := range blame_output {
+
 		for _, data := range blame.blame_data {
 
-			author_data := ProcessOutput{}
+			if len(data.Mail) == 0 {
+				continue
+			}
+
+			var author_data ProcessOutput
 
 			for i := range result {
 				if result[i].author == data.Mail {
@@ -48,12 +53,19 @@ func ExecuteProcessor() []ProcessOutput {
 			}
 
 			if len(author_data.author) == 0 {
-				author_data := ProcessOutput{
-					author: data.Mail,
-					loc:    0,
+				author_data = ProcessOutput{
+					author:  data.Mail,
+					loc:     0,
+					commits: 0,
+					files:   make(map[string]bool),
 				}
 				result = append(result, author_data)
 			}
+
+			log.Infof("about to populate %+v", author_data)
+
+			// add the file
+			author_data.files[blame.file] = true
 
 			com := 0
 
