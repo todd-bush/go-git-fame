@@ -39,3 +39,10 @@ func Test_GitShortLog(t *testing.T) {
 	assert.NotNil(t, lines)
 	assert.Equal(t, len(lines) > 1, true)
 }
+
+func Test_GitCurrentBranch(t *testing.T) {
+	result := GitCurrentBranch()
+
+	assert.NotNil(t, result)
+	t.Log(result)
+}

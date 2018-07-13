@@ -66,3 +66,17 @@ func GitShortLog() []string {
 
 	return ExecuteGitCommand(short_cmd)
 }
+
+func GitCurrentBranch() string {
+	branch_cmd := "git branch | grep \\* | cut -d ' ' -f2"
+
+	results := ExecuteGitCommand(branch_cmd)
+
+	var result string
+
+	if len(results) > 0 {
+		result = results[0]
+	}
+
+	return result
+}
