@@ -34,7 +34,9 @@ func ExecuteProcessor() []ProcessOutput {
 
 	result := []ProcessOutput{}
 
-	blame_output := GatherBlame("master") // TODO should be an argument
+	default_branch := git.GitCurrentBranch()
+
+	blame_output := GatherBlame(default_branch)
 	commits := GatherCommits()
 
 	for _, blame := range blame_output {
