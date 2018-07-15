@@ -42,6 +42,8 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 		default_branch = git.GitCurrentBranch()
 	}
 
+	log.Infof("processing fame on branch %s", default_branch)
+
 	blame_output := GatherBlame(default_branch)
 	commits := GatherCommits()
 
