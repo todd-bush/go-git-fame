@@ -30,11 +30,17 @@ type BlameProcess struct {
 	blame_lines []string
 }
 
-func ExecuteProcessor() []ProcessOutput {
+func ExecuteProcessor(branch string) []ProcessOutput {
 
 	result := []ProcessOutput{}
 
-	default_branch := git.GitCurrentBranch()
+	var default_branch string
+
+	if len(branch) > 0 {
+		default_branch = branch
+	} else {
+		default_branch = git.GitCurrentBranch()
+	}
 
 	blame_output := GatherBlame(default_branch)
 	commits := GatherCommits()

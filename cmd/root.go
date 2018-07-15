@@ -14,7 +14,7 @@ var rootCmd = &cobra.Command{
 	Use:   "go-git-fame",
 	Short: "Fame give you commit stats for your GIT repo",
 	Run: func(cmd *cobra.Command, args []string) {
-
+		ExecuteProcessor(branch)
 	},
 }
 

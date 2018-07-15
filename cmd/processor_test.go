@@ -17,7 +17,7 @@ func Test_ExecuteProcessor(t *testing.T) {
 
 	os.Chdir("../")
 
-	result := ExecuteProcessor()
+	result := ExecuteProcessor("master")
 
 	assert.Equal(t, len(result) > 0, true)
 
