@@ -2,24 +2,11 @@ package git
 
 import (
 	"fmt"
-	log "github.com/sirupsen/logrus"
 	"os/exec"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
-
-func ExecuteGitCommand(command string) []string {
-
-	git_out, err := exec.Command("sh", "-c", command).Output()
-
-	if err != nil {
-		log.Fatalf("%T\n", err)
-	}
-
-	lines := strings.Split(string(git_out), "\n")
-
-	return lines
-
-}
 
 /*
 	preforms a 'git ls-tree' on the branch arguments.
@@ -27,9 +14,9 @@ func ExecuteGitCommand(command string) []string {
 */
 func GitListFiles(branch string) []string {
 
-	git_cmd := fmt.Sprintf("git ls-tree -r --name-only %s", branch)
+	gitCmd := fmt.Sprintf("git ls-tree -r --name-only %s", branch)
 
-	return ExecuteGitCommand(git_cmd)
+	return executeGitCommand(gitCmd)
 
 }
 
@@ -38,11 +25,11 @@ Check to see if the branch argument exists
 boolean if the branch exists or not
 */
 func BranchExists(branch string) bool {
-	git_cmd := fmt.Sprintf("git show-ref %s", branch)
+	gitCmd := fmt.Sprintf("git show-ref %s", branch)
 
-	show_out, _ := exec.Command("bash", "-c", git_cmd).Output()
+	showOut, _ := exec.Command("bash", "-c", gitCmd).Output()
 
-	return len(string(show_out)) > 0
+	return len(string(showOut)) > 0
 }
 
 /*
@@ -50,11 +37,11 @@ Performs a 'git blame' on the file argument
 returns output as string slice
 */
 func GitBlame(file string) []string {
-	git_cmd := fmt.Sprintf("git blame -M -p -w -- '%s'", file)
+	gitCmd := fmt.Sprintf("git blame -M -p -w -- '%s'", file)
 
 	log.Debugf("running Blame on file: %s", file)
 
-	return ExecuteGitCommand(git_cmd)
+	return executeGitCommand(gitCmd)
 }
 
 /*
@@ -62,15 +49,15 @@ Performs a 'git shortlog' on the current directory
 returns output as string slice
 */
 func GitShortLog() []string {
-	short_cmd := "git log --pretty=short | git shortlog -nse"
+	shortCmd := "git log --pretty=short | git shortlog -nse"
 
-	return ExecuteGitCommand(short_cmd)
+	return executeGitCommand(shortCmd)
 }
 
 func GitCurrentBranch() string {
-	branch_cmd := "git branch | grep \\* | cut -d ' ' -f2"
+	branchCmd := "git branch | grep \\* | cut -d ' ' -f2"
 
-	results := ExecuteGitCommand(branch_cmd)
+	results := executeGitCommand(branchCmd)
 
 	var result string
 
@@ -79,4 +66,18 @@ func GitCurrentBranch() string {
 	}
 
 	return result
+}
+
+func executeGitCommand(command string) []string {
+
+	gitOut, err := exec.Command("sh", "-c", command).Output()
+
+	if err != nil {
+		log.Fatalf("%T\n", err)
+	}
+
+	lines := strings.Split(string(gitOut), "\n")
+
+	return lines
+
 }
