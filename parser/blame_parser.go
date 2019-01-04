@@ -1,10 +1,11 @@
 package parser
 
 import (
-	log "github.com/sirupsen/logrus"
 	"regexp"
 	"strconv"
 	"strings"
+
+	log "github.com/sirupsen/logrus"
 )
 
 type BlameLines struct {
@@ -12,8 +13,8 @@ type BlameLines struct {
 	index_ptr int
 }
 
-func shift(bl *BlameLines) string {
-	result := current_line(*bl)
+func (bl *BlameLines) shift() string {
+	result := bl.currentLine()
 
 	if bl.index_ptr < len(bl.lines)-1 {
 		bl.index_ptr = bl.index_ptr + 1
@@ -22,11 +23,11 @@ func shift(bl *BlameLines) string {
 	return result
 }
 
-func current_line(bl BlameLines) string {
+func (bl *BlameLines) currentLine() string {
 	return bl.lines[bl.index_ptr]
 }
 
-func at_end(bl BlameLines) bool {
+func (bl *BlameLines) atEnd() bool {
 	return len(bl.lines)-1 == bl.index_ptr
 }
 
@@ -66,7 +67,7 @@ func Parse(lines []string) []BlameData {
 
 		inx = blame_lines.index_ptr
 
-		if at_end(blame_lines) {
+		if blame_lines.atEnd() {
 			break
 		}
 
@@ -75,10 +76,10 @@ func Parse(lines []string) []BlameData {
 	return chunks
 }
 
-func ParseHeader(blame_lines BlameLines) (BlameData, BlameLines) {
+func ParseHeader(blines BlameLines) (BlameData, BlameLines) {
 	r, _ := regexp.Compile(`(?m)^([0-9a-f]{40}) (\d+) (\d+) (\d+)$`)
 
-	headerline := shift(&blame_lines)
+	headerline := blines.shift()
 
 	log.Infof("parsing header line: %s", headerline)
 
@@ -87,18 +88,18 @@ func ParseHeader(blame_lines BlameLines) (BlameData, BlameLines) {
 
 	bd := BlameData{oid: pieces[1], Num_lines: numlines}
 
-	if strings.HasPrefix(current_line(blame_lines), "author") {
-		bd.Author = strings.TrimPrefix(shift(&blame_lines), "author ")
-		bd.Mail = strings.TrimPrefix(shift(&blame_lines), "author-mail ")
-		bd.time = strings.TrimPrefix(shift(&blame_lines), "author-time ")
-		bd.tz = strings.TrimPrefix(shift(&blame_lines), "author-tz ")
+	if strings.HasPrefix(blines.currentLine(), "author") {
+		bd.Author = strings.TrimPrefix(blines.shift(), "author ")
+		bd.Mail = strings.TrimPrefix(blines.shift(), "author-mail ")
+		bd.time = strings.TrimPrefix(blines.shift(), "author-time ")
+		bd.tz = strings.TrimPrefix(blines.shift(), "author-tz ")
 		Commits[bd.oid] = bd
 
 		// get to filename
 
 		for {
-			trash := shift(&blame_lines)
-			if strings.HasPrefix(trash, "filename") || at_end(blame_lines) {
+			trash := blines.shift()
+			if strings.HasPrefix(trash, "filename") || blines.atEnd() {
 				break
 			}
 		}
@@ -110,7 +111,7 @@ func ParseHeader(blame_lines BlameLines) (BlameData, BlameLines) {
 		bd.Num_lines = numlines
 	}
 
-	return bd, blame_lines
+	return bd, blines
 }
 
 func ParseLines(lines BlameLines, num int) ([]string, BlameLines) {
@@ -121,7 +122,7 @@ func ParseLines(lines BlameLines, num int) ([]string, BlameLines) {
 	log.Infof("processing %d lines starting with %s", process_lines, lines.lines[lines.index_ptr])
 
 	for i := 0; i < process_lines; i++ {
-		extracted = append(extracted, shift(&lines))
+		extracted = append(extracted, lines.shift())
 	}
 
 	return extracted, lines
