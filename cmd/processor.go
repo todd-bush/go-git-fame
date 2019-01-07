@@ -1,11 +1,12 @@
 package cmd
 
 import (
+	"regexp"
+	"strconv"
+
 	log "github.com/sirupsen/logrus"
 	git "github.com/todd-bush/go-git-fame/git_client"
 	"github.com/todd-bush/go-git-fame/parser"
-	"regexp"
-	"strconv"
 )
 
 type BlameOutput struct {
@@ -86,7 +87,7 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 				com = val
 			}
 
-			author_data.loc += data.Num_lines
+			author_data.loc += data.NumLines
 			author_data.commits = com
 		}
 	}

@@ -9,32 +9,32 @@ import (
 )
 
 type BlameLines struct {
-	lines     []string
-	index_ptr int
+	lines    []string
+	indexPtr int
 }
 
 func (bl *BlameLines) shift() string {
 	result := bl.currentLine()
 
-	if bl.index_ptr < len(bl.lines)-1 {
-		bl.index_ptr = bl.index_ptr + 1
+	if bl.indexPtr < len(bl.lines)-1 {
+		bl.indexPtr++
 	}
 
 	return result
 }
 
-func (bl *BlameLines) currentLine() string {
-	return bl.lines[bl.index_ptr]
+func (bl BlameLines) currentLine() string {
+	return bl.lines[bl.indexPtr]
 }
 
-func (bl *BlameLines) atEnd() bool {
-	return len(bl.lines)-1 == bl.index_ptr
+func (bl BlameLines) atEnd() bool {
+	return len(bl.lines)-1 == bl.indexPtr
 }
 
 type BlameData struct {
 	oid         string
 	Author      string
-	Num_lines   int
+	NumLines    int
 	Mail        string
 	time        string
 	tz          string
@@ -51,21 +51,21 @@ func Parse(lines []string) []BlameData {
 
 	log.Debugf("beginning parse on lines: %v", lines)
 
-	blame_lines := BlameLines{lines: lines, index_ptr: inx}
+	blame_lines := BlameLines{lines: lines, indexPtr: inx}
 
 	chunks := []BlameData{}
 
 	for {
 
-		blame_lines.index_ptr = inx
+		blame_lines.indexPtr = inx
 
 		header, blame_lines := ParseHeader(blame_lines)
-		extracted_lines, blame_lines := ParseLines(blame_lines, header.Num_lines)
+		extracted_lines, blame_lines := ParseLines(blame_lines, header.NumLines)
 		header.other_lines = append(header.other_lines, extracted_lines...)
 
 		chunks = append(chunks, header)
 
-		inx = blame_lines.index_ptr
+		inx = blame_lines.indexPtr
 
 		if blame_lines.atEnd() {
 			break
@@ -86,7 +86,7 @@ func ParseHeader(blines BlameLines) (BlameData, BlameLines) {
 	pieces := r.FindStringSubmatch(headerline)
 	numlines, _ := strconv.Atoi(pieces[4])
 
-	bd := BlameData{oid: pieces[1], Num_lines: numlines}
+	bd := BlameData{oid: pieces[1], NumLines: numlines}
 
 	if strings.HasPrefix(blines.currentLine(), "author") {
 		bd.Author = strings.TrimPrefix(blines.shift(), "author ")
@@ -108,7 +108,7 @@ func ParseHeader(blines BlameLines) (BlameData, BlameLines) {
 		log.Debugf("using found data: %s", bd.oid)
 		bd = Commits[bd.oid]
 		log.Debugf("found bd data with author: %s", bd.Author)
-		bd.Num_lines = numlines
+		bd.NumLines = numlines
 	}
 
 	return bd, blines
@@ -119,7 +119,7 @@ func ParseLines(lines BlameLines, num int) ([]string, BlameLines) {
 
 	process_lines := num*2 - 1
 
-	log.Infof("processing %d lines starting with %s", process_lines, lines.lines[lines.index_ptr])
+	log.Infof("processing %d lines starting with %s", process_lines, lines.lines[lines.indexPtr])
 
 	for i := 0; i < process_lines; i++ {
 		extracted = append(extracted, lines.shift())
