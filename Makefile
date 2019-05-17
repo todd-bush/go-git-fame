@@ -25,24 +25,13 @@ TEST_OPTIONS?=-race -covermode=atomic -coverprofile=coverage.txt
 bin/$(NAME): $(GO_SRC_DIRS)
 	go build $(LDFLAGS) -o bin/$(NAME)
 
-.PHONY: setup 
+.PHONY: setup
 setup:  ## Installs all of the build and lint dependencies
 	go get -u gopkg.in/alecthomas/gometalinter.v2
 	go get -u github.com/golang/dep/cmd/dep
 	go get -u golang.org/x/tools/cmd/cover
 	go get -u golang.org/x/tools/cmd/goimports
-	dep ensure
 	gometalinter --install --update
-
-.PHONY: dep
-dep:
-ifeq ($(shell command -v dep 2> /dev/null),)
-	go get -u -v github.com/golang/dep/cmd/dep
-endif
-
-.PHONY: deps
-deps: dep  ## ensure the dependencies are installed
-	dep ensure -v
 
 .PHONY: install
 install:  ## runs install
@@ -60,7 +49,7 @@ cover: test ## Run all the tests and opens the coverage report
 fmt: ## runs fmt
 	go fmt $(NOVENDOR)
 .PHONY: clean
-clean: ## clean up 
+clean: ## clean up
 	rm -rf bin/*
 	rm -rf vendor/*
 
@@ -68,7 +57,7 @@ clean: ## clean up
 help:  ## displays this message
 	@grep -E '^[ a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-15s\033[0m %s\n", $$1, $$2}'
-		
+
 .PHONY: version
 version:  ## displays the version
 	@echo $(VERSION)
