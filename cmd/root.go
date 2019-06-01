@@ -2,24 +2,46 @@ package cmd
 
 import (
 	"fmt"
-	"github.com/spf13/cobra"
 	"os"
+
+	"github.com/jedib0t/go-pretty/table"
+	log "github.com/sirupsen/logrus"
+	"github.com/spf13/cobra"
 )
 
 var (
-	branch string
+	branch  string
+	verbose bool
 )
 
 var rootCmd = &cobra.Command{
 	Use:   "go-git-fame",
 	Short: "Fame give you commit stats for your GIT repo",
 	Run: func(cmd *cobra.Command, args []string) {
-		ExecuteProcessor(branch)
+
+		if verbose {
+			log.SetLevel(log.InfoLevel)
+		} else {
+			log.SetLevel(log.ErrorLevel)
+		}
+
+		output := ExecuteProcessor(branch)
+
+		t := table.NewWriter()
+		t.SetOutputMirror(os.Stdout)
+		t.AppendHeader(table.Row{"Author", "Email", "Files", "Commits", "LOC"})
+
+		for _, out := range output {
+			t.AppendRow(table.Row{out.author, out.email, out.file_count, out.commits, out.loc})
+		}
+
+		t.Render()
 	},
 }
 
 func init() {
 	rootCmd.PersistentFlags().StringVar(&branch, "branch", "", "branch to use, defaults to current HEAD")
+	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "enable verbosness")
 }
 
 func Execute() {
