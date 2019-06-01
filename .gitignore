@@ -13,7 +13,7 @@
 *.out
 
 # dep file/folders
-vendor/*/
+/vendor/*
 /test/tests.*
 /test/coverage.*
 

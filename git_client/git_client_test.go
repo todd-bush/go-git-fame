@@ -27,7 +27,7 @@ func Test_GitBlame(t *testing.T) {
 	lines := GitBlame("../Makefile") // include path
 
 	assert.NotNil(t, lines)
-	assert.Equal(t, len(lines) > 190, true)
+	assert.Equal(t, len(lines) > 10, true)
 
 }
 

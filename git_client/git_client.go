@@ -1,7 +1,6 @@
 package git
 
 import (
-	"fmt"
 	"os/exec"
 	"strings"
 
@@ -14,9 +13,12 @@ import (
 */
 func GitListFiles(branch string) []string {
 
-	gitCmd := fmt.Sprintf("git ls-tree -r --name-only %s", branch)
+	var sb strings.Builder
 
-	return executeGitCommand(gitCmd)
+	sb.WriteString("git ls-tree -r --name-only ")
+	sb.WriteString(branch)
+
+	return executeGitCommand(sb.String())
 
 }
 
@@ -25,9 +27,12 @@ Check to see if the branch argument exists
 boolean if the branch exists or not
 */
 func BranchExists(branch string) bool {
-	gitCmd := fmt.Sprintf("git show-ref %s", branch)
+	var sb strings.Builder
 
-	showOut, _ := exec.Command("bash", "-c", gitCmd).Output()
+	sb.WriteString("git show-ref ")
+	sb.WriteString(branch)
+
+	showOut, _ := exec.Command("bash", "-c", sb.String()).Output()
 
 	return len(string(showOut)) > 0
 }
@@ -37,11 +42,16 @@ Performs a 'git blame' on the file argument
 returns output as string slice
 */
 func GitBlame(file string) []string {
-	gitCmd := fmt.Sprintf("git blame -M -p -w -- '%s'", file)
+
+	var sb strings.Builder
+
+	sb.WriteString("git blame -M -p -w -- '")
+	sb.WriteString(file)
+	sb.WriteString("'")
 
 	log.Debugf("running Blame on file: %s", file)
 
-	return executeGitCommand(gitCmd)
+	return executeGitCommand(sb.String())
 }
 
 /*
