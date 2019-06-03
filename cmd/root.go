@@ -20,7 +20,7 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if verbose {
-			log.SetLevel(log.InfoLevel)
+			log.SetLevel(log.DebugLevel)
 		} else {
 			log.SetLevel(log.ErrorLevel)
 		}

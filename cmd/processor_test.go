@@ -1,10 +1,12 @@
 package cmd
 
 import (
-	log "github.com/sirupsen/logrus"
-	"github.com/stretchr/testify/assert"
+	"fmt"
 	"os"
 	"testing"
+
+	log "github.com/sirupsen/logrus"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_Main(t *testing.T) {
@@ -31,7 +33,13 @@ func Test_GatherBlame(t *testing.T) {
 	assert.Equal(t, len(blame_results) > 0, true)
 
 	for _, result := range blame_results {
-		log.Debugf("blame results for file %s", result.file)
+		fmt.Printf("blame results for file %s\n", result.file)
+
+		for _, blame := range result.blame_data {
+			fmt.Printf("\tblame.author=%s\n", blame.Author)
+			fmt.Printf("\tblame.numlines=%d\n", blame.NumLines)
+		}
+
 	}
 
 }
@@ -44,7 +52,7 @@ func Test_GatherCommits(t *testing.T) {
 
 	for k, v := range test_result {
 
-		log.Debugf("results include key=%s, val=%d", k, v)
+		fmt.Printf("results include key=%s, val=%d\n", k, v)
 
 		assert.NotNil(t, k)
 		assert.NotNil(t, v)
