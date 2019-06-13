@@ -90,13 +90,10 @@ func ParseHeader(blines BlameLines) (BlameData, BlameLines) {
 
 	if strings.HasPrefix(blines.currentLine(), "author") {
 		bd.Author = strings.TrimPrefix(blines.shift(), "author ")
-		bd.Mail = strings.TrimPrefix(blines.shift(), "author-mail ")
+		bd.Mail = strings.Trim(strings.Trim(strings.TrimPrefix(blines.shift(), "author-mail "), "<"), ">")
 		bd.time = strings.TrimPrefix(blines.shift(), "author-time ")
 		bd.tz = strings.TrimPrefix(blines.shift(), "author-tz ")
 		Commits[bd.oid] = bd
-
-		// clean up email
-		bd.Mail = strings.Trim(strings.Trim(bd.Mail, "<"), ">")
 
 		// get to filename
 
