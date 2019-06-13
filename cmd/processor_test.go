@@ -10,7 +10,7 @@ import (
 )
 
 func Test_Main(t *testing.T) {
-	log.SetLevel(log.WarnLevel)
+	log.SetLevel(log.ErrorLevel)
 }
 
 func Test_ExecuteProcessor(t *testing.T) {
@@ -22,6 +22,15 @@ func Test_ExecuteProcessor(t *testing.T) {
 	result := ExecuteProcessor("master")
 
 	assert.Equal(t, len(result) > 0, true)
+
+	for _, r := range result {
+
+		fmt.Printf("author=%s\n", r.author)
+		fmt.Printf("\temail=%s\n", r.email)
+		fmt.Printf("\tfiles=%d\n", r.file_count)
+		fmt.Printf("\tcommits=%d\n", r.commits)
+
+	}
 
 }
 
@@ -35,10 +44,10 @@ func Test_GatherBlame(t *testing.T) {
 	for _, result := range blame_results {
 		fmt.Printf("blame results for file %s\n", result.file)
 
-		for _, blame := range result.blame_data {
-			fmt.Printf("\tblame.author=%s\n", blame.Author)
-			fmt.Printf("\tblame.numlines=%d\n", blame.NumLines)
-		}
+		// for _, blame := range result.blame_data {
+		// 	fmt.Printf("\tblame.author=%s\n", blame.Author)
+		// 	fmt.Printf("\tblame.numlines=%d\n", blame.NumLines)
+		// }
 
 	}
 

@@ -20,3 +20,6 @@
 # any VI tmp files
 *.swp
 *.swo
+
+# any log files
+*.log

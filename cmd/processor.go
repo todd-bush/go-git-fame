@@ -43,10 +43,12 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 		default_branch = git.GitCurrentBranch()
 	}
 
-	log.Infof("processing fame on branch %s", default_branch)
+	log.Infof("processing fame on branch %s\n", default_branch)
 
 	blame_output := GatherBlame(default_branch)
 	commits := GatherCommits()
+
+	log.Infof("commits hash: %v\n", commits)
 
 	for _, blame := range blame_output {
 
@@ -56,24 +58,25 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 				continue
 			}
 
-			var author_data ProcessOutput
+			var author_data *ProcessOutput
 
 			for i := range result {
 				if result[i].email == data.Mail {
-					author_data = result[i]
+					author_data = &result[i]
 					break
 				}
 			}
 
-			if len(author_data.email) == 0 {
-				author_data = ProcessOutput{
+			if author_data == nil {
+				var ad = ProcessOutput{
 					author:  data.Author,
 					email:   data.Mail,
 					loc:     0,
 					commits: 0,
 					files:   make(map[string]bool),
 				}
-				result = append(result, author_data)
+				result = append(result, ad)
+				author_data = &ad
 			}
 
 			log.Infof("about to populate %+v", author_data)
@@ -81,14 +84,14 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 			// add the file
 			author_data.files[blame.file] = true
 
-			com := 0
-
-			if val, ok := commits[data.Mail]; ok {
-				com = val
+			log.Infof("looking for commit data for %s\n", author_data.email)
+			if val, ok := commits[author_data.email]; ok {
+				author_data.commits = val
+				log.Infof("adding %d to %s\n", val, author_data.email)
 			}
 
 			author_data.loc += data.NumLines
-			author_data.commits = com
+
 		}
 	}
 

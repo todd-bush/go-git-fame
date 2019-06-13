@@ -95,6 +95,9 @@ func ParseHeader(blines BlameLines) (BlameData, BlameLines) {
 		bd.tz = strings.TrimPrefix(blines.shift(), "author-tz ")
 		Commits[bd.oid] = bd
 
+		// clean up email
+		bd.Mail = strings.Trim(strings.Trim(bd.Mail, "<"), ">")
+
 		// get to filename
 
 		for {
