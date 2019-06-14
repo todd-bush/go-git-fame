@@ -69,11 +69,15 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 
 			if author_data == nil {
 				var ad = ProcessOutput{
-					author:  data.Author,
-					email:   data.Mail,
-					loc:     0,
-					commits: 0,
-					files:   make(map[string]bool),
+					author:       data.Author,
+					email:        data.Mail,
+					loc:          0,
+					commits:      0,
+					files:        make(map[string]bool),
+					file_count:   0,
+					commits_perc: 0,
+					loc_perc:     0,
+					files_perc:   0,
 				}
 				result = append(result, ad)
 				author_data = &ad
@@ -105,11 +109,16 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 		total_files += out.file_count
 	}
 
-	// now the %s
-	for _, per := range result {
-		per.loc_perc = float32(per.loc) / float32(total_loc) * float32(100)
-		per.commits_perc = float32(per.commits) / float32(total_commits) * float32(100)
-		per.files_perc = float32(per.file_count) / float32(total_files) * float32(100)
+	log.Infof("totals: %d, %d, %d", total_commits, total_loc, total_files)
+
+	for i, _ := range result {
+		var ad *ProcessOutput
+		ad = &result[i]
+
+		ad.loc_perc = (float32(ad.loc) / float32(total_loc)) * float32(100)
+		ad.commits_perc = float32(ad.commits) / float32(total_commits) * float32(100)
+		ad.files_perc = float32(ad.file_count) / float32(total_files) * float32(100)
+
 	}
 
 	return result

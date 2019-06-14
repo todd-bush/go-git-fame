@@ -20,7 +20,7 @@ var rootCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if verbose {
-			log.SetLevel(log.DebugLevel)
+			log.SetLevel(log.InfoLevel)
 		} else {
 			log.SetLevel(log.ErrorLevel)
 		}
@@ -29,10 +29,11 @@ var rootCmd = &cobra.Command{
 
 		t := table.NewWriter()
 		t.SetOutputMirror(os.Stdout)
-		t.AppendHeader(table.Row{"Author", "Email", "Files", "Commits", "LOC"})
+		t.AppendHeader(table.Row{"Author", "Email", "Files", "Commits", "LOC", "Distribution"})
 
 		for _, out := range output {
-			t.AppendRow(table.Row{out.author, out.email, out.file_count, out.commits, out.loc})
+			dist := fmt.Sprintf("%04.2f/%04.2f/%04.2f", out.files_perc, out.commits_perc, out.loc_perc)
+			t.AppendRow(table.Row{out.author, out.email, out.file_count, out.commits, out.loc, dist})
 		}
 
 		t.Render()
