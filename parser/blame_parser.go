@@ -32,13 +32,13 @@ func (bl BlameLines) atEnd() bool {
 }
 
 type BlameData struct {
-	oid         string
-	Author      string
-	NumLines    int
-	Mail        string
-	time        string
-	tz          string
-	other_lines []string
+	oid        string
+	Author     string
+	NumLines   int
+	Mail       string
+	time       string
+	tz         string
+	otherLines []string
 }
 
 type commits map[string]BlameData
@@ -51,23 +51,23 @@ func Parse(lines []string) []BlameData {
 
 	log.Debugf("beginning parse on lines: %v", lines)
 
-	blame_lines := BlameLines{lines: lines, indexPtr: inx}
+	blameLines := BlameLines{lines: lines, indexPtr: inx}
 
 	chunks := []BlameData{}
 
 	for {
 
-		blame_lines.indexPtr = inx
+		blameLines.indexPtr = inx
 
-		header, blame_lines := ParseHeader(blame_lines)
-		extracted_lines, blame_lines := ParseLines(blame_lines, header.NumLines)
-		header.other_lines = append(header.other_lines, extracted_lines...)
+		header, blameLines := ParseHeader(blameLines)
+		extractedLines, blameLines := ParseLines(blameLines, header.NumLines)
+		header.otherLines = append(header.otherLines, extractedLines...)
 
 		chunks = append(chunks, header)
 
-		inx = blame_lines.indexPtr
+		inx = blameLines.indexPtr
 
-		if blame_lines.atEnd() {
+		if blameLines.atEnd() {
 			break
 		}
 
@@ -117,11 +117,11 @@ func ParseHeader(blines BlameLines) (BlameData, BlameLines) {
 func ParseLines(lines BlameLines, num int) ([]string, BlameLines) {
 	extracted := []string{}
 
-	process_lines := num*2 - 1
+	processLines := num*2 - 1
 
-	log.Infof("processing %d lines starting with %s", process_lines, lines.lines[lines.indexPtr])
+	log.Infof("processing %d lines starting with %s", processLines, lines.lines[lines.indexPtr])
 
-	for i := 0; i < process_lines; i++ {
+	for i := 0; i < processLines; i++ {
 		extracted = append(extracted, lines.shift())
 	}
 

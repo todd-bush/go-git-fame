@@ -41,7 +41,7 @@ func Test_Parse(t *testing.T) {
 
 	assert.Equal(len(data), 3)
 	assert.Equal(data[0].oid, "4e8a3451534e82b131a3c27fbcccadafb417de8f")
-	assert.Equal(len(data[0].other_lines) > 50, true)
+	assert.Equal(len(data[0].otherLines) > 50, true)
 }
 
 func Test_ParseHeader(t *testing.T) {

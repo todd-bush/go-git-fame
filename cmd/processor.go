@@ -10,20 +10,20 @@ import (
 )
 
 type BlameOutput struct {
-	file       string
-	blame_data []parser.BlameData
+	file      string
+	blameData []parser.BlameData
 }
 
 type ProcessOutput struct {
-	author       string
-	email        string
-	loc          int
-	commits      int
-	files        map[string]bool
-	file_count   int
-	loc_perc     float32
-	commits_perc float32
-	files_perc   float32
+	author      string
+	email       string
+	loc         int
+	commits     int
+	files       map[string]bool
+	fileCount   int
+	locPerc     float32
+	commitsPerc float32
+	filesPerc   float32
 }
 
 type BlameProcess struct {
@@ -35,89 +35,89 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 
 	result := []ProcessOutput{}
 
-	var default_branch string
+	var defaultBranch string
 
 	if len(branch) > 0 {
-		default_branch = branch
+		defaultBranch = branch
 	} else {
-		default_branch = git.GitCurrentBranch()
+		defaultBranch = git.GitCurrentBranch()
 	}
 
-	log.Infof("processing fame on branch %s\n", default_branch)
+	log.Infof("processing fame on branch %s\n", defaultBranch)
 
-	blame_output := GatherBlame(default_branch)
+	blameOutput := GatherBlame(defaultBranch)
 	commits := GatherCommits()
 
 	log.Infof("commits hash: %v\n", commits)
 
-	for _, blame := range blame_output {
+	for _, blame := range blameOutput {
 
-		for _, data := range blame.blame_data {
+		for _, data := range blame.blameData {
 
 			if len(data.Mail) == 0 {
 				continue
 			}
 
-			var author_data *ProcessOutput
+			var authorData *ProcessOutput
 
 			for i := range result {
 				if result[i].email == data.Mail {
-					author_data = &result[i]
+					authorData = &result[i]
 					break
 				}
 			}
 
-			if author_data == nil {
+			if authorData == nil {
 				var ad = ProcessOutput{
-					author:       data.Author,
-					email:        data.Mail,
-					loc:          0,
-					commits:      0,
-					files:        make(map[string]bool),
-					file_count:   0,
-					commits_perc: 0,
-					loc_perc:     0,
-					files_perc:   0,
+					author:      data.Author,
+					email:       data.Mail,
+					loc:         0,
+					commits:     0,
+					files:       make(map[string]bool),
+					fileCount:   0,
+					commitsPerc: 0,
+					locPerc:     0,
+					filesPerc:   0,
 				}
 				result = append(result, ad)
-				author_data = &ad
+				authorData = &ad
 			}
 
-			log.Infof("about to populate %+v", author_data)
+			log.Infof("about to populate %+v", authorData)
 
 			// add the file
-			author_data.files[blame.file] = true
+			authorData.files[blame.file] = true
 
-			log.Infof("looking for commit data for %s\n", author_data.email)
-			if val, ok := commits[author_data.email]; ok {
-				author_data.commits = val
-				log.Infof("adding %d to %s\n", val, author_data.email)
+			log.Infof("looking for commit data for %s\n", authorData.email)
+			if val, ok := commits[authorData.email]; ok {
+				authorData.commits = val
+				log.Infof("adding %d to %s\n", val, authorData.email)
 			}
 
-			author_data.loc += data.NumLines
+			authorData.loc += data.NumLines
 
 		}
 	}
 
 	// now do the counts and totals
-	total_commits, total_loc, total_files := 0, 0, 0
+	totalCommits, totalLoc, totalFiles := 0, 0, 0
 
 	for _, out := range result {
-		out.file_count = len(out.files)
-		total_commits += out.commits
-		total_loc += out.loc
-		total_files += out.file_count
+		out.fileCount = len(out.files)
+		totalCommits += out.commits
+		totalLoc += out.loc
+		totalFiles += out.fileCount
 	}
 
-	log.Infof("totals: %d, %d, %d", total_commits, total_loc, total_files)
+	log.Infof("totals: %d, %d, %d", totalCommits, totalLoc, totalFiles)
 
 	for i, _ := range result {
 		var ad *ProcessOutput
 		ad = &result[i]
 
-		ad.loc_perc = (float32(ad.loc) / float32(total_loc)) * float32(100)
-		ad.commits_perc = float32(ad.commits) / float32(total_commits) * float32(100)
-		ad.files_perc = float32(ad.file_count) / float32(total_files) * float32(100)
+		ad.locPerc = (float32(ad.loc) / float32(totalLoc)) * float32(100)
+		ad.commitsPerc = float32(ad.commits) / float32(totalCommits) * float32(100)
+		ad.filesPerc = float32(ad.fileCount) / float32(totalFiles) * float32(100)
 
 	}
 
@@ -128,55 +128,55 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 func GatherBlame(branch string) []BlameOutput {
 
 	// get this list of files
-	file_list := git.GitListFiles(branch)
+	fileList := git.GitListFiles(branch)
 
-	log.Infof("found %d files to process", len(file_list))
+	log.Infof("found %d files to process", len(fileList))
 
-	blame_out := []BlameProcess{}
+	blameOut := []BlameProcess{}
 
-	for _, file := range file_list {
+	for _, file := range fileList {
 
 		if len(file) > 0 {
 
-			blame_result := git.GitBlame(file)
+			blameResult := git.GitBlame(file)
 			out := BlameProcess{
 				file:        file,
-				blame_lines: blame_result,
+				blame_lines: blameResult,
 			}
 
-			blame_out = append(blame_out, out)
+			blameOut = append(blameOut, out)
 		}
 	}
 
-	blame_collector := []BlameOutput{}
+	blameCollector := []BlameOutput{}
 
-	for _, bi := range blame_out {
+	for _, bi := range blameOut {
 
 		log.Infof("parsing blame on file: %s", bi.file)
 
-		blame_out := parser.Parse(bi.blame_lines)
-		blame_collector = append(blame_collector, BlameOutput{
-			file:       bi.file,
-			blame_data: blame_out,
+		blameOut := parser.Parse(bi.blame_lines)
+		blameCollector = append(blameCollector, BlameOutput{
+			file:      bi.file,
+			blameData: blameOut,
 		})
 	}
 
-	return blame_collector
+	return blameCollector
 }
 
 func GatherCommits() map[string]int {
 	result := map[string]int{}
 
-	commit_lines := git.GitShortLog()
+	commitLines := git.GitShortLog()
 
 	r, _ := regexp.Compile(`(\d+)\s+(.+)\s+<(.+?)>`)
 
-	for _, commit_line := range commit_lines {
+	for _, commitLine := range commitLines {
 
-		if len(commit_line) > 0 {
+		if len(commitLine) > 0 {
 
-			log.Debugf("parsing line %s", commit_line)
-			peices := r.FindStringSubmatch(commit_line)
+			log.Debugf("parsing line %s", commitLine)
+			peices := r.FindStringSubmatch(commitLine)
 
 			log.Debugf("peices = %v", peices)
 			commits, _ := strconv.Atoi(peices[1])

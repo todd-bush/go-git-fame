@@ -32,8 +32,8 @@ var rootCmd = &cobra.Command{
 		t.AppendHeader(table.Row{"Author", "Email", "Files", "Commits", "LOC", "Distribution"})
 
 		for _, out := range output {
-			dist := fmt.Sprintf("%04.2f/%04.2f/%04.2f", out.files_perc, out.commits_perc, out.loc_perc)
-			t.AppendRow(table.Row{out.author, out.email, out.file_count, out.commits, out.loc, dist})
+			dist := fmt.Sprintf("%04.2f/%04.2f/%04.2f", out.filesPerc, out.commitsPerc, out.locPerc)
+			t.AppendRow(table.Row{out.author, out.email, out.fileCount, out.commits, out.loc, dist})
 		}
 
 		t.Render()

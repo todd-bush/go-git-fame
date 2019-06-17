@@ -27,7 +27,7 @@ func Test_ExecuteProcessor(t *testing.T) {
 
 		fmt.Printf("author=%s\n", r.author)
 		fmt.Printf("\temail=%s\n", r.email)
-		fmt.Printf("\tfiles=%d\n", r.file_count)
+		fmt.Printf("\tfiles=%d\n", r.fileCount)
 		fmt.Printf("\tcommits=%d\n", r.commits)
 
 	}
