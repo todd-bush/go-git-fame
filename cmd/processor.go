@@ -54,14 +54,14 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 
 		for _, data := range blame.blameData {
 
-			if len(data.Mail) == 0 {
+			if len(data.Author) == 0 {
 				continue
 			}
 
 			var authorData *ProcessOutput
 
 			for i := range result {
-				if result[i].email == data.Mail {
+				if result[i].author == data.Author {
 					authorData = &result[i]
 					break
 				}
@@ -88,10 +88,10 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 			// add the file
 			authorData.files[blame.file] = true
 
-			log.Infof("looking for commit data for %s\n", authorData.email)
-			if val, ok := commits[authorData.email]; ok {
+			log.Infof("looking for commit data for %s\n", authorData.author)
+			if val, ok := commits[authorData.author]; ok {
 				authorData.commits = val
-				log.Infof("adding %d to %s\n", val, authorData.email)
+				log.Infof("adding %d to %s\n", val, authorData.author)
 			}
 
 			authorData.loc += data.NumLines
@@ -180,7 +180,7 @@ func GatherCommits() map[string]int {
 
 			log.Debugf("peices = %v", peices)
 			commits, _ := strconv.Atoi(peices[1])
-			result[peices[3]] = commits
+			result[peices[2]] = commits
 		}
 	}
 
