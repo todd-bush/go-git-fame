@@ -4,6 +4,7 @@ import (
 	"regexp"
 	"strconv"
 
+	pb "github.com/cheggaaa/pb/v3"
 	log "github.com/sirupsen/logrus"
 	git "github.com/todd-bush/go-git-fame/git_client"
 	"github.com/todd-bush/go-git-fame/parser"
@@ -48,9 +49,13 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 	blameOutput := GatherBlame(defaultBranch)
 	commits := GatherCommits()
 
+	bar := pb.StartNew(len(blameOutput))
+
 	log.Infof("commits hash: %v\n", commits)
 
 	for _, blame := range blameOutput {
+
+		bar.Increment()
 
 		for _, data := range blame.blameData {
 
@@ -120,6 +125,8 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 		ad.filesPerc = float32(ad.fileCount) / float32(totalFiles) * float32(100)
 
 	}
+
+	bar.Finish()
 
 	return result
 
