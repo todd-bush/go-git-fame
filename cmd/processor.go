@@ -49,13 +49,9 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 	blameOutput := GatherBlame(defaultBranch)
 	commits := GatherCommits()
 
-	bar := pb.StartNew(len(blameOutput))
-
 	log.Infof("commits hash: %v\n", commits)
 
 	for _, blame := range blameOutput {
-
-		bar.Increment()
 
 		for _, data := range blame.blameData {
 
@@ -126,8 +122,6 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 
 	}
 
-	bar.Finish()
-
 	return result
 
 }
@@ -141,7 +135,11 @@ func GatherBlame(branch string) []BlameOutput {
 
 	blameOut := []BlameProcess{}
 
+	bar := pb.StartNew(len(fileList))
+
 	for _, file := range fileList {
+
+		bar.Increment()
 
 		if len(file) > 0 {
 
@@ -167,6 +165,8 @@ func GatherBlame(branch string) []BlameOutput {
 			blameData: blameOut,
 		})
 	}
+
+	bar.Finish()
 
 	return blameCollector
 }
