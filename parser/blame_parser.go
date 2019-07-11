@@ -49,7 +49,7 @@ func Parse(lines []string) []BlameData {
 
 	inx := 0
 
-	log.Debugf("beginning parse on lines: %v", lines)
+	log.Infof("beginning parse on lines: %v", lines)
 
 	blameLines := BlameLines{lines: lines, indexPtr: inx}
 
@@ -84,7 +84,15 @@ func ParseHeader(blines BlameLines) (BlameData, BlameLines) {
 	log.Infof("parsing header line: %s", headerline)
 
 	pieces := r.FindStringSubmatch(headerline)
-	numlines, _ := strconv.Atoi(pieces[4])
+	numlines := 0
+
+	if len(pieces) == 0 {
+		log.Errorf("headerline doesn't match regex: %s", headerline)
+	}
+
+	if len(pieces) > 4 {
+		numlines, _ = strconv.Atoi(pieces[4])
+	}
 
 	bd := BlameData{oid: pieces[1], NumLines: numlines}
 

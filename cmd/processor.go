@@ -157,13 +157,15 @@ func GatherBlame(branch string) []BlameOutput {
 
 	for _, bi := range blameOut {
 
-		log.Infof("parsing blame on file: %s", bi.file)
+		log.Infof("parsing blame on file: %s; lines %d", bi.file, len(bi.blame_lines))
 
-		blameOut := parser.Parse(bi.blame_lines)
-		blameCollector = append(blameCollector, BlameOutput{
-			file:      bi.file,
-			blameData: blameOut,
-		})
+		if len(bi.blame_lines) > 1 {
+			blameOut := parser.Parse(bi.blame_lines)
+			blameCollector = append(blameCollector, BlameOutput{
+				file:      bi.file,
+				blameData: blameOut,
+			})
+		}
 	}
 
 	bar.Finish()
