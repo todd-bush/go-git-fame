@@ -31,6 +31,17 @@ func (s *processOutputSorter) Less(i, j int) bool {
 	return s.by(&s.processOutput[i], &s.processOutput[j])
 }
 
+// ByCommits sorts by number of commits
 func ByCommits(p1, p2 *ProcessOutput) bool {
 	return p1.commits > p2.commits
+}
+
+// ByLoc sorts by number of LOC
+func ByLoc(p1, p2 *ProcessOutput) bool {
+	return p1.loc > p2.loc
+}
+
+// ByFiles sorts by files
+func ByFiles(p1, p2 *ProcessOutput) bool {
+	return p1.fileCount > p2.fileCount
 }
