@@ -29,11 +29,12 @@ var rootCmd = &cobra.Command{
 		output := ExecuteProcessor(branch)
 
 		// default
-		if s == "loc" {
+		switch s {
+		case "loc":
 			By(ByLoc).Sort(output)
-		} else if s == "files" {
+		case "files":
 			By(ByFiles).Sort(output)
-		} else {
+		default:
 			By(ByCommits).Sort(output)
 		}
 
