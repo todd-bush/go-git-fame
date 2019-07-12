@@ -127,7 +127,7 @@ func ParseLines(lines BlameLines, num int) ([]string, BlameLines) {
 
 	processLines := num*2 - 1
 
-	log.Infof("processing %d lines starting with %s", processLines, lines.lines[lines.indexPtr])
+	log.Infof("processing %d lines starting with %s", processLines, lines.currentLine())
 
 	for i := 0; i < processLines; i++ {
 		extracted = append(extracted, lines.shift())
