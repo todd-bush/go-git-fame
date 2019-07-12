@@ -27,6 +27,9 @@ var rootCmd = &cobra.Command{
 
 		output := ExecuteProcessor(branch)
 
+		// default
+		By(ByCommits).Sort(output)
+
 		t := table.NewWriter()
 		t.SetOutputMirror(os.Stdout)
 		t.AppendHeader(table.Row{"Author", "Email", "Files", "Commits", "LOC", "Distribution"})
