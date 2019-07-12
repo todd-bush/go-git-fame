@@ -27,12 +27,11 @@ bin/$(NAME): $(GO_SRC_DIRS)
 
 .PHONY: setup
 setup:  ## Installs all of the build and lint dependencies
+	export GO111MODULE=on
 	go get -u gopkg.in/alecthomas/gometalinter.v2
-	go get -u github.com/golang/dep/cmd/dep
 	go get -u golang.org/x/tools/cmd/cover
 	go get -u golang.org/x/tools/cmd/goimports
 	gometalinter --install --update
-	export GO111MODULE=on
 
 .PHONY: install
 install:  ## runs install

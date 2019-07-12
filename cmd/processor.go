@@ -88,6 +88,7 @@ func ExecuteProcessor(branch string) []ProcessOutput {
 
 			// add the file
 			authorData.files[blame.file] = true
+			authorData.fileCount = len(authorData.files) + 1
 
 			log.Infof("looking for commit data for %s\n", authorData.author)
 			if val, ok := commits[authorData.author]; ok {
