@@ -12,6 +12,7 @@ import (
 var (
 	branch  string
 	verbose bool
+	s       string
 )
 
 var rootCmd = &cobra.Command{
@@ -28,7 +29,13 @@ var rootCmd = &cobra.Command{
 		output := ExecuteProcessor(branch)
 
 		// default
-		By(ByCommits).Sort(output)
+		if s == "loc" {
+			By(ByLoc).Sort(output)
+		} else if s == "files" {
+			By(ByFiles).Sort(output)
+		} else {
+			By(ByCommits).Sort(output)
+		}
 
 		t := table.NewWriter()
 		t.SetOutputMirror(os.Stdout)
@@ -46,6 +53,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.PersistentFlags().StringVar(&branch, "branch", "", "branch to use, defaults to current HEAD")
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "enable verbosness")
+	rootCmd.PersistentFlags().StringVar(&s, "sort", "", "sort field, either 'commit' (default), 'loc', 'files'")
 }
 
 func Execute() {
