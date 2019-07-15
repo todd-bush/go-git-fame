@@ -28,7 +28,7 @@ func (bl BlameLines) currentLine() string {
 }
 
 func (bl BlameLines) atEnd() bool {
-	return len(bl.lines)-1 == bl.indexPtr
+	return len(bl.lines)-1 <= bl.indexPtr
 }
 
 type BlameData struct {
