@@ -32,13 +32,12 @@ func (bl BlameLines) atEnd() bool {
 }
 
 type BlameData struct {
-	oid        string
-	Author     string
-	NumLines   int
-	Mail       string
-	time       string
-	tz         string
-	otherLines []string
+	oid      string
+	Author   string
+	NumLines int
+	Mail     string
+	time     string
+	tz       string
 }
 
 type commits map[string]BlameData
@@ -60,8 +59,7 @@ func Parse(lines []string) []BlameData {
 		blameLines.indexPtr = inx
 
 		header, blameLines := ParseHeader(blameLines)
-		extractedLines, blameLines := ParseLines(blameLines, header.NumLines)
-		header.otherLines = append(header.otherLines, extractedLines...)
+		blameLines = ParseLines(blameLines, header.NumLines)
 
 		chunks = append(chunks, header)
 
@@ -103,8 +101,7 @@ func ParseHeader(blines BlameLines) (BlameData, BlameLines) {
 		bd.tz = strings.TrimPrefix(blines.shift(), "author-tz ")
 		Commits[bd.oid] = bd
 
-		// get to filename
-
+		// move pointer to the end of this stanza
 		for {
 			trash := blines.shift()
 			if strings.HasPrefix(trash, "filename") || blines.atEnd() {
@@ -122,16 +119,16 @@ func ParseHeader(blines BlameLines) (BlameData, BlameLines) {
 	return bd, blines
 }
 
-func ParseLines(lines BlameLines, num int) ([]string, BlameLines) {
-	extracted := []string{}
+func ParseLines(lines BlameLines, num int) BlameLines {
 
 	processLines := num*2 - 1
 
 	log.Infof("processing %d lines starting with %s", processLines, lines.currentLine())
 
+	// move the pointer this many
 	for i := 0; i < processLines; i++ {
-		extracted = append(extracted, lines.shift())
+		lines.shift()
 	}
 
-	return extracted, lines
+	return lines
 }

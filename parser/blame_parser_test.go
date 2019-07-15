@@ -11,9 +11,10 @@ import (
 )
 
 func TestMain(m *testing.M) {
-	log.SetLevel(log.DebugLevel)
+	log.SetLevel(log.ErrorLevel)
 	log.SetOutput(os.Stdout)
-	m.Run()
+	code := m.Run()
+	os.Exit(code)
 }
 
 func LoadTest() string {
@@ -39,9 +40,9 @@ func Test_Parse(t *testing.T) {
 
 	//t.Log(fmt.Sprintf("Parse Data: %v\n", data))
 
-	assert.Equal(len(data), 3)
+	assert.Equal(27, len(data))
 	assert.Equal(data[0].oid, "4e8a3451534e82b131a3c27fbcccadafb417de8f")
-	assert.Equal(len(data[0].otherLines) > 50, true)
+
 }
 
 func Test_ParseHeader(t *testing.T) {
@@ -67,8 +68,8 @@ func Test_ParseLines(t *testing.T) {
 
 	bl := BlameLines{lines, 0}
 
-	extractedLines, bl := ParseLines(bl, 1)
+	bl = ParseLines(bl, 1)
 
-	assert.Equal(t, len(extractedLines), 1)
+	assert.Equal(t, bl.indexPtr, 1)
 
 }
