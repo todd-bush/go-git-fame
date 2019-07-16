@@ -23,6 +23,10 @@ func (bl *BlameLines) shift() string {
 	return result
 }
 
+func (bl *BlameLines) skip(num int) {
+	bl.indexPtr += num
+}
+
 func (bl BlameLines) currentLine() string {
 	return bl.lines[bl.indexPtr]
 }
@@ -123,12 +127,8 @@ func ParseLines(lines BlameLines, num int) BlameLines {
 
 	processLines := num*2 - 1
 
-	log.Infof("processing %d lines starting with %s", processLines, lines.currentLine())
-
 	// move the pointer this many
-	for i := 0; i < processLines; i++ {
-		lines.shift()
-	}
+	lines.skip(processLines)
 
 	return lines
 }
