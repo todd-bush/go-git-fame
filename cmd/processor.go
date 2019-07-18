@@ -138,20 +138,27 @@ func GatherBlame(branch string) []BlameOutput {
 
 	bar := pb.StartNew(len(fileList))
 
+	// default to 5 routines
+	guard := make(chan struct{}, 5)
+
 	for _, file := range fileList {
 
 		bar.Increment()
+		guard <- struct{}{}
 
-		if len(file) > 0 {
+		go func(f string) {
+			if len(f) > 0 {
 
-			blameResult := git.GitBlame(file)
-			out := BlameProcess{
-				file:        file,
-				blame_lines: blameResult,
+				blameResult := git.GitBlame(f)
+				out := BlameProcess{
+					file:        f,
+					blame_lines: blameResult,
+				}
+
+				blameOut = append(blameOut, out)
 			}
-
-			blameOut = append(blameOut, out)
-		}
+			<-guard
+		}(file)
 	}
 
 	blameCollector := []BlameOutput{}
