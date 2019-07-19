@@ -3,6 +3,7 @@ package cmd
 import (
 	"regexp"
 	"strconv"
+	"sync"
 
 	pb "github.com/cheggaaa/pb/v3"
 	log "github.com/sirupsen/logrus"
@@ -140,6 +141,9 @@ func GatherBlame(branch string) []BlameOutput {
 
 	// default to 5 routines
 	guard := make(chan struct{}, 5)
+	var wg sync.WaitGroup
+
+	wg.Add(len(fileList))
 
 	for _, file := range fileList {
 
@@ -147,6 +151,9 @@ func GatherBlame(branch string) []BlameOutput {
 		guard <- struct{}{}
 
 		go func(f string) {
+
+			defer wg.Done()
+
 			if len(f) > 0 {
 
 				blameResult := git.GitBlame(f)
@@ -160,6 +167,8 @@ func GatherBlame(branch string) []BlameOutput {
 			<-guard
 		}(file)
 	}
+
+	wg.Wait()
 
 	blameCollector := []BlameOutput{}
 
