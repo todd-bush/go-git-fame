@@ -27,3 +27,6 @@ Execute ```go-git-fame``` from your git repository.
 ### Options
 
 ```--sort``` will allow to sort by commits (default), loc, or files
+
+## Need Help?
+```make help```
