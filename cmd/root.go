@@ -13,6 +13,7 @@ var (
 	branch  string
 	verbose bool
 	s       string
+	debug   bool
 )
 
 var rootCmd = &cobra.Command{
@@ -20,7 +21,9 @@ var rootCmd = &cobra.Command{
 	Short: "Fame give you commit stats for your GIT repo",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		if verbose {
+		if debug {
+			log.SetLevel(log.DebugLevel)
+		} else if verbose {
 			log.SetLevel(log.InfoLevel)
 		} else {
 			log.SetLevel(log.ErrorLevel)
@@ -54,6 +57,7 @@ var rootCmd = &cobra.Command{
 func init() {
 	rootCmd.PersistentFlags().StringVar(&branch, "branch", "", "branch to use, defaults to current HEAD")
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "enable verbosness")
+	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "enable debug")
 	rootCmd.PersistentFlags().StringVar(&s, "sort", "", "sort field, either 'commit' (default), 'loc', 'files'")
 }
 
