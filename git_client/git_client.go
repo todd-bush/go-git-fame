@@ -71,6 +71,8 @@ func GitBlame(file string) []string {
 	r, e := executeGitCommand(sb.String())
 
 	if e != nil {
+		log.Infof("GitBlame: error on file %s, skipping", cleanFile)
+
 		return make([]string, 0)
 	}
 
@@ -113,7 +115,7 @@ func executeGitCommand(command string) ([]string, error) {
 
 	if err != nil {
 
-		log.Errorf("Error while running GIT command \"%s\"\n %v\n", command, err)
+		log.Warnf("Error while running GIT command \"%s\"\n %v\n", command, err)
 		return nil, err
 	}
 
