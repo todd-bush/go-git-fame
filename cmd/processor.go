@@ -157,6 +157,9 @@ func GatherBlame(branch string) []BlameOutput {
 			if len(f) > 0 {
 
 				blameResult := git.GitBlame(f)
+
+				log.Debugf("successfully blamed %s", f)
+
 				out := BlameProcess{
 					file:        f,
 					blame_lines: blameResult,

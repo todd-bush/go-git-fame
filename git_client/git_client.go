@@ -18,7 +18,13 @@ func GitListFiles(branch string) []string {
 	sb.WriteString("git ls-tree -r --name-only ")
 	sb.WriteString(branch)
 
-	return executeGitCommand(sb.String())
+	r, e := executeGitCommand(sb.String())
+
+	if e != nil {
+		log.Fatalf("GitListFiles failed: %v", e)
+	}
+
+	return r
 
 }
 
@@ -45,13 +51,30 @@ func GitBlame(file string) []string {
 
 	var sb strings.Builder
 
-	sb.WriteString("git blame -M -p -w -- '")
-	sb.WriteString(file)
-	sb.WriteString("'")
+	cleanFile := strings.Replace(file, "\"", "", -1)
 
-	log.Debugf("running Blame on file: %s", file)
+	escapeFile := cleanFile == file
 
-	return executeGitCommand(sb.String())
+	sb.WriteString("git blame -M -p -w -- ")
+	if escapeFile {
+		sb.WriteString("'")
+	}
+	sb.WriteString(cleanFile)
+
+	if escapeFile {
+		sb.WriteString("'")
+
+	}
+
+	log.Debugf("running Blame on file: %s", cleanFile)
+
+	r, e := executeGitCommand(sb.String())
+
+	if e != nil {
+		return make([]string, 0)
+	}
+
+	return r
 }
 
 /*
@@ -61,13 +84,19 @@ returns output as string slice
 func GitShortLog() []string {
 	shortCmd := "git log --pretty=short | git shortlog -nse"
 
-	return executeGitCommand(shortCmd)
+	r, e := executeGitCommand(shortCmd)
+
+	if e != nil {
+		log.Fatalf("GitShortLog failed error: %v", e)
+	}
+
+	return r
 }
 
 func GitCurrentBranch() string {
 	branchCmd := "git branch | grep \\* | cut -d ' ' -f2"
 
-	results := executeGitCommand(branchCmd)
+	results, _ := executeGitCommand(branchCmd)
 
 	var result string
 
@@ -78,16 +107,18 @@ func GitCurrentBranch() string {
 	return result
 }
 
-func executeGitCommand(command string) []string {
+func executeGitCommand(command string) ([]string, error) {
 
 	gitOut, err := exec.Command("sh", "-c", command).Output()
 
 	if err != nil {
-		log.Fatalf("%T\n", err)
+
+		log.Errorf("Error while running GIT command \"%s\"\n %v\n", command, err)
+		return nil, err
 	}
 
 	lines := strings.Split(string(gitOut), "\n")
 
-	return lines
+	return lines, nil
 
 }
