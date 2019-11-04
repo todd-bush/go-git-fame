@@ -8,6 +8,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var headerRegex = regexp.MustCompile(`(?m)^([0-9a-f]{40}) (\d+) (\d+) (\d+)$`)
+
 type BlameLines struct {
 	lines    []string
 	indexPtr int
@@ -79,13 +81,12 @@ func Parse(lines []string) []BlameData {
 }
 
 func ParseHeader(blines BlameLines) (BlameData, BlameLines) {
-	r, _ := regexp.Compile(`(?m)^([0-9a-f]{40}) (\d+) (\d+) (\d+)$`)
 
 	headerline := blines.shift()
 
 	log.Infof("parsing header line: %s", headerline)
 
-	pieces := r.FindStringSubmatch(headerline)
+	pieces := headerRegex.FindStringSubmatch(headerline)
 	numlines := 0
 
 	if len(pieces) == 0 {
