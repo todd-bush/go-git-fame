@@ -47,3 +47,12 @@ func Test_GitCurrentBranch(t *testing.T) {
 	assert.NotNil(t, result)
 	t.Log(result)
 }
+
+func Test_GitCommitDate(t *testing.T) {
+	result := GitCommitDate()
+
+	assert.NotNil(t, result)
+	assert.Equal(t, len(result) > 1, true)
+	t.Log(result)
+
+}

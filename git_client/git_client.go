@@ -109,6 +109,18 @@ func GitCurrentBranch() string {
 	return result
 }
 
+func GitCommitDate() []string {
+	gitCmd := "git log --pretty=format:\"%cn::%cd\""
+
+	r, e := executeGitCommand(gitCmd)
+
+	if e != nil {
+		log.Fatalf("Git log failed: cmd=\"%s\".  Error: %v", gitCmd, e)
+	}
+
+	return r
+}
+
 func executeGitCommand(command string) ([]string, error) {
 
 	gitOut, err := exec.Command("sh", "-c", command).Output()
