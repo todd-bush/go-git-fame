@@ -14,6 +14,7 @@ require (
 	github.com/cosiner/argv v0.0.1 // indirect
 	github.com/go-delve/delve v1.3.1 // indirect
 	github.com/go-openapi/strfmt v0.19.0 // indirect
+	github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 // indirect
 	github.com/google/shlex v0.0.0-20181106134648-c34317bd91bf // indirect
 	github.com/gordonklaus/ineffassign v0.0.0-20190601041439-ed7b1b5ee0f8 // indirect
 	github.com/jedib0t/go-pretty v4.2.0+incompatible
@@ -34,14 +35,16 @@ require (
 	github.com/stripe/safesql v0.0.0-20171221195208-cddf355596fe // indirect
 	github.com/tsenart/deadcode v0.0.0-20160724212837-210d2dc333e9 // indirect
 	github.com/walle/lll v0.0.0-20160702150637-8b13b3fbf731 // indirect
+	github.com/wcharczuk/go-chart v2.0.1+incompatible
 	go.starlark.net v0.0.0-20190919145610-979af19b165c // indirect
 	golang.org/x/arch v0.0.0-20190927153633-4e8777c89be4 // indirect
 	golang.org/x/crypto v0.0.0-20190927123631-a832865fa7ad // indirect
+	golang.org/x/image v0.0.0-20191009234506-e7c1f5e7dbb8 // indirect
 	golang.org/x/net v0.0.0-20190628185345-da137c7871d7 // indirect
 	golang.org/x/sys v0.0.0-20190927073244-c990c680b611 // indirect
 	golang.org/x/text v0.3.2 // indirect
 	gopkg.in/alecthomas/gometalinter.v2 v2.0.12 // indirect
-	gopkg.in/alecthomas/kingpin.v3-unstable v3.0.0-20180810215634-df19058c872c // indirect
+	gopkg.in/alecthomas/kingpin.v3-unstable v3.0.0-20191105091915-95d230a53780 // indirect
 	honnef.co/go/tools v0.0.0-2019.2.1 // indirect
 	mvdan.cc/interfacer v0.0.0-20180901003855-c20040233aed // indirect
 	mvdan.cc/lint v0.0.0-20170908181259-adc824a0674b // indirect
