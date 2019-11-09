@@ -54,11 +54,22 @@ var rootCmd = &cobra.Command{
 	},
 }
 
+var graphCommand = &cobra.Command{
+	Use:   "version",
+	Short: "Creates and persists a PNG graph of commits over time",
+	Long:  "Creates and persists a PNG graph image of commits over time",
+	Run: func(cmd *cobra.Command, args []string) {
+
+	},
+}
+
 func init() {
 	rootCmd.PersistentFlags().StringVar(&branch, "branch", "", "branch to use, defaults to current HEAD")
 	rootCmd.PersistentFlags().BoolVar(&verbose, "verbose", false, "enable verbosness")
 	rootCmd.PersistentFlags().BoolVar(&debug, "debug", false, "enable debug")
 	rootCmd.PersistentFlags().StringVar(&s, "sort", "", "sort field, either 'commit' (default), 'loc', 'files'")
+
+	rootCmd.AddCommand(graphCommand)
 }
 
 func Execute() {
