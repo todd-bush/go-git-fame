@@ -51,3 +51,11 @@ func CollectCommits() []CommitsByDate {
 
 	return commitDates
 }
+
+func GraphCommits(cbd []CommitsByDate) {
+	err := GraphCommitsByTime(cbd)
+
+	if err != nil {
+		log.Fatalf("error to create image file: %+v", err)
+	}
+}

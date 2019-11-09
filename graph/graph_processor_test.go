@@ -2,6 +2,7 @@ package graph
 
 import (
 	"fmt"
+	"os"
 	"testing"
 	"time"
 
@@ -28,6 +29,23 @@ func Test_CollectCommits(t *testing.T) {
 
 		lastDate = c.date
 
+	}
+
+}
+
+func Test_GraphCommits(t *testing.T) {
+	commits := CollectCommits()
+
+	assert.NotNil(t, commits)
+
+	GraphCommits(commits)
+
+	_, fErr := os.Stat(CommitByDateFileName)
+	assert.Nil(t, fErr)
+
+	dErr := os.Remove(CommitByDateFileName)
+	if dErr != nil {
+		t.Log(dErr)
 	}
 
 }
