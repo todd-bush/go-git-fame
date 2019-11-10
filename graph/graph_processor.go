@@ -18,15 +18,15 @@ func CollectCommits() []CommitsByDate {
 
 	for _, c := range commits {
 
-		splitedString := strings.Split(c, "::")
+		dateString := strings.Split(c, "::")[1]
 
-		commitDate, err := time.Parse(gitDateForm, splitedString[1])
-
-		commitDate = commitDate.Truncate(dayDuration)
+		commitDate, err := time.Parse(gitDateForm, dateString)
 
 		if err != nil {
-			log.Errorf("Error parsing date %s.  Error: %v", splitedString[1], err)
+			log.Errorf("Error parsing date %s.  Error: %v", dateString, err)
 		}
+
+		commitDate = commitDate.Truncate(dayDuration)
 
 		if val, ok := dateMap[commitDate]; ok {
 			dateMap[commitDate] = val + 1

@@ -7,6 +7,7 @@ import (
 	"github.com/jedib0t/go-pretty/table"
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
+	"github.com/todd-bush/go-git-fame/graph"
 )
 
 var (
@@ -21,13 +22,7 @@ var rootCmd = &cobra.Command{
 	Short: "Fame give you commit stats for your GIT repo",
 	Run: func(cmd *cobra.Command, args []string) {
 
-		if debug {
-			log.SetLevel(log.DebugLevel)
-		} else if verbose {
-			log.SetLevel(log.InfoLevel)
-		} else {
-			log.SetLevel(log.ErrorLevel)
-		}
+		setLogLevel()
 
 		output := ExecuteProcessor(branch)
 
@@ -55,11 +50,15 @@ var rootCmd = &cobra.Command{
 }
 
 var graphCommand = &cobra.Command{
-	Use:   "version",
+	Use:   "graph",
 	Short: "Creates and persists a PNG graph of commits over time",
 	Long:  "Creates and persists a PNG graph image of commits over time",
 	Run: func(cmd *cobra.Command, args []string) {
 
+		setLogLevel()
+
+		commits := graph.CollectCommits()
+		graph.GraphCommits(commits)
 	},
 }
 
@@ -76,5 +75,15 @@ func Execute() {
 	if err := rootCmd.Execute(); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
+	}
+}
+
+func setLogLevel() {
+	if debug {
+		log.SetLevel(log.DebugLevel)
+	} else if verbose {
+		log.SetLevel(log.InfoLevel)
+	} else {
+		log.SetLevel(log.ErrorLevel)
 	}
 }
